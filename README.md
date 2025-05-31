@@ -59,6 +59,7 @@ farmlink-api/
 |   ├── productsController.js
 |   ├── reviewsController.js
 │   └── usersController.js
+│
 ├── middleware/
 |   ├── globalErrHandler.js
 |   ├── isAdmin.js

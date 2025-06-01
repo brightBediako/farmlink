@@ -218,5 +218,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 ## Contributors
 
 [Bright Bediako](bright.bediako.dev@gmail.com)
+[Lemik Manyore](lemik254@gmail.com)
+[Oluwatobi Adelabu](adelabutobi@gmail.com)
 
 ---

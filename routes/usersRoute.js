@@ -2,11 +2,14 @@ import express from "express";
 import {
   registerUserController,
   loginUserController,
+  getUserProfileController,
 } from "../controllers/usersController.js";
+import {isLoggedIn} from "../middleware/isLoggedIn.js";
 
-const userRoutes = express.Router();
+const usersRoute = express.Router();
 
-userRoutes.post("/api/v1/users/register", registerUserController);
-userRoutes.post("/api/v1/users/login", loginUserController);
+usersRoute.post("/register", registerUserController);
+usersRoute.post("/login", loginUserController);
+usersRoute.get("/profile",isLoggedIn, getUserProfileController);
 
-export default userRoutes;
+export default usersRoute;

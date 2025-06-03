@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
+import generateToken from "../utils/generateToken.js";
+import { getTokenFromHeader } from "../utils/getTokenFromHeader.js";
 
 // desc    register
 // route   POST /api/v1/users/register
@@ -30,7 +32,7 @@ export const registerUserController = asyncHandler(async (req, res) => {
   });
 });
 
-// desc    register
+// desc    login
 // route   POST /api/v1/users/login
 // access  Public
 
@@ -45,9 +47,17 @@ export const loginUserController = asyncHandler(async (req, res) => {
       status: "success",
       message: "Login Successfully",
       userFound,
+      token: generateToken(userFound?._id),
     });
   } else {
     throw new Error("Invalid Login Credentials");
   }
 });
 
+// desc    get user
+// route   POST /api/v1/users/profile
+// access  Private
+export const getUserProfileController = asyncHandler(async (req, res) => {
+    const token = getTokenFromHeader(req);
+    const verified = verifyToken(token);
+});

@@ -59,5 +59,5 @@ export const loginUserController = asyncHandler(async (req, res) => {
 // access  Private
 export const getUserProfileController = asyncHandler(async (req, res) => {
     const token = getTokenFromHeader(req);
-    const verified = verifyToken(token);
+    // const verified = verifyToken(token);
 });

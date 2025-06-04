@@ -58,6 +58,116 @@ export const loginUserController = asyncHandler(async (req, res) => {
 // route   POST /api/v1/users/profile
 // access  Private
 export const getUserProfileController = asyncHandler(async (req, res) => {
-    const token = getTokenFromHeader(req);
-    // const verified = verifyToken(token);
+  //find the user
+  const user = await User.findById(req.userAuthId).populate("orders");
+  res.json({
+    status: "success",
+    message: "User profile fetched successfully",
+    user,
+  });
 });
+
+// desc    update user
+// route   POST /api/v1/users/profile/:id
+// access  Private
+export const updateUserProfileController = asyncHandler(async (req, res) => {
+  const { fullname, email, password } = req.body;
+
+  // find user
+  const user = await User.findById(req.userAuthId);
+  if (!user) {
+    throw new Error("User not found");
+  } else {
+    user.fullname = fullname;
+    user.email = email;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      user.password = hashedPassword;
+    }
+    await user.save();
+    res.json({
+      status: "success",
+      message: "User profile updated successfully",
+      user,
+    });
+  }
+});
+
+// desc    delete user
+// route   POST /api/v1/users/profile/;id
+// access  Private/Admin
+export const deleteUserController = asyncHandler(async (req, res) => {
+  // find user
+  const user = await User.findById(req.userAuthId);
+  if (!user) {
+    throw new Error("User not found");
+  } else {
+    await user.deleteOne();
+    res.json({
+      status: "success",
+      message: "User deleted successfully",
+    });
+  }
+});
+
+// desc    block user
+// route   POST /api/v1/users/profile/:id/block
+// access  Private/Admin
+export const blockUserController = asyncHandler(async (req, res) => {
+  // find user
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new Error("User not found");
+  } else {
+    user.isBlocked = true;
+    await user.save();
+    res.json({
+      status: "success",
+      message: "User blocked successfully",
+      user,
+    });
+  }
+});
+
+// @desc    Update user shipping address
+// @route   PUT /api/v1/users/update/shipping
+// @access  Private
+
+// export const updateShippingAddressController = asyncHandler(async (req, res) => {
+//   const {
+//     firstName,
+//     lastName,
+//     address,
+//     city,
+//     postalCode,
+//     province,
+//     phone,
+//     country,
+//   } = req.body;
+//   const user = await User.findByIdAndUpdate(
+//     req.userAuthId,
+//     {
+//       shippingAddress: {
+//         firstName,
+//         lastName,
+//         address,
+//         city,
+//         postalCode,
+//         province,
+//         phone,
+//         country,
+//       },
+//       hasShippingAddress: true,
+//     },
+//     {
+//       new: true,
+//     }
+//   );
+//   //send response
+//   res.json({
+//     status: "success",
+//     message: "User shipping address updated successfully",
+//     user,
+//   });
+// });

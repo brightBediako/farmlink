@@ -5,7 +5,9 @@ import dbConnect from "../config/dbConnect.js";
 import { globalErrhandler, notFound } from "../middleware/globalErrHandler.js";
 import usersRoute from "../routes/usersRoute.js";
 import productsRoute from "../routes/productsRoute.js";
-
+import categoriesRoute from "../routes/categoriesRoute.js";
+import colorsRoute from "../routes/colorsRoute.js";
+import brandsRoute from "../routes/brandsRoute.js";
 
 //db connect
 dbConnect();
@@ -16,7 +18,9 @@ app.use(express.json());
 // routes
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/products", productsRoute);
-
+app.use("/api/v1/categories", categoriesRoute);
+app.use("/api/v1/colors", colorsRoute);
+app.use("/api/v1/brands", brandsRoute);
 
 // err middleware
 app.use(notFound);

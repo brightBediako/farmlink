@@ -38,10 +38,9 @@ export const createProductController = asyncHandler(async (req, res) => {
     price,
     totalQty,
   });
-// push product id to category
+  // push product id to category
   categoryFound.products.push(product._id);
   await categoryFound.save();
-
 
   res.json({
     status: "success",
@@ -120,7 +119,7 @@ export const getProductController = asyncHandler(async (req, res) => {
   productQuery = productQuery.limit(limit).skip(startIndex);
 
   // await query
-  const products = await productQuery;
+  const products = await productQuery.populate("reviews");
   res.json({
     status: "success",
     total,
@@ -136,8 +135,7 @@ export const getProductController = asyncHandler(async (req, res) => {
 // access   Public
 
 export const getSingleProductController = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const product = await Product.findById(id);
+  const product = await Product.findById(req.params.id).populate("reviews");
   if (!product) {
     throw new Error("Product Not Found");
   }

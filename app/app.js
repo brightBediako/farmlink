@@ -8,6 +8,8 @@ import productsRoute from "../routes/productsRoute.js";
 import categoriesRoute from "../routes/categoriesRoute.js";
 import colorsRoute from "../routes/colorsRoute.js";
 import brandsRoute from "../routes/brandsRoute.js";
+import reviewsRoute from "../routes/reviewsRoute.js";
+import couponsRoute from "../routes/couponsRoute.js";
 
 //db connect
 dbConnect();
@@ -21,8 +23,11 @@ app.use("/api/v1/products", productsRoute);
 app.use("/api/v1/categories", categoriesRoute);
 app.use("/api/v1/colors", colorsRoute);
 app.use("/api/v1/brands", brandsRoute);
+app.use("/api/v1/reviews/", reviewsRoute);
+app.use("/api/v1/coupons/", couponsRoute);
+// app.use("/api/v1/orders/", ordersRoute);
 
-// err middleware
+// error middleware
 app.use(notFound);
 app.use(globalErrhandler);
 export default app;

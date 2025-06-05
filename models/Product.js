@@ -58,7 +58,7 @@ const ProductSchema = new Schema(
 
     totalQty: {
       type: Number,
-      // required: true,
+      required: true,
     },
     totalSold: {
       type: Number,

@@ -71,7 +71,7 @@ const ProductSchema = new Schema(
     toJSON: { virtuals: true },
   }
 );
-//Virtuals
+// virtuals//
 //qty left
 ProductSchema.virtual("qtyLeft").get(function () {
   const product = this;

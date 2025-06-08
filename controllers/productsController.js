@@ -17,14 +17,26 @@ export const createProductController = asyncHandler(async (req, res) => {
     price,
     totalQty,
   } = req.body;
+
+  // check if product already exists
   const productExists = await Product.findOne({ name });
   if (productExists) {
     throw new Error("Product Already Exists");
   }
-  // check if category exists
-  const categoryFound = await Category.findOne({ name: category });
+  // find by category
+  const categoryFound = await Category.findOne({ 
+    name: category,
+  });
   if (!categoryFound) {
     throw new Error("Category Not Found");
+  }
+
+  // find by Brand
+  const brandFound = await Category.findOne({ 
+    name: brand?.toLowerCase() 
+  });
+  if (!brandFound) {
+    throw new Error("Brand Not Found");
   }
 
   const product = await Product.create({

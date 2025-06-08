@@ -4,6 +4,7 @@ import {
   loginUserController,
   getUserProfileController,
   updateUserProfileController,
+  updateShippingAddressController,
   deleteUserController,
   blockUserController,
 } from "../controllers/usersController.js";
@@ -15,6 +16,7 @@ usersRoute.post("/register", registerUserController);
 usersRoute.post("/login", loginUserController);
 usersRoute.get("/profile",isLoggedIn, getUserProfileController);
 usersRoute.put("/profile/:id", isLoggedIn, updateUserProfileController);
+usersRoute.put("/update/shipping", isLoggedIn, updateShippingAddressController);
 usersRoute.delete("/profile/:id", isLoggedIn, deleteUserController);
 usersRoute.put("/profile/:id/block", isLoggedIn, blockUserController);
 

@@ -24,7 +24,7 @@ export const createProductController = asyncHandler(async (req, res) => {
     throw new Error("Product Already Exists");
   }
   // find by category
-  const categoryFound = await Category.findOne({ 
+  const categoryFound = await Category.findOne({
     name: category,
   });
   if (!categoryFound) {
@@ -32,8 +32,8 @@ export const createProductController = asyncHandler(async (req, res) => {
   }
 
   // find by Brand
-  const brandFound = await Category.findOne({ 
-    name: brand?.toLowerCase() 
+  const brandFound = await Brand.findOne({
+    name: brand?.toLowerCase(),
   });
   if (!brandFound) {
     throw new Error("Brand Not Found");

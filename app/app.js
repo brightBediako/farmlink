@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+import Stripe from "stripe";
 import express from "express";
 import dbConnect from "../config/dbConnect.js";
 import { globalErrhandler, notFound } from "../middleware/globalErrHandler.js";
@@ -11,10 +12,66 @@ import brandsRoute from "../routes/brandsRoute.js";
 import reviewsRoute from "../routes/reviewsRoute.js";
 import couponsRoute from "../routes/couponsRoute.js";
 import ordersRoute from "../routes/ordersRoute.js";
+import Order from "../models/Order.js";
+import User from "../models/User.js";
 
 //db connect
 dbConnect();
 const app = express();
+
+// stripe webhook
+const stripe = new Stripe(process.env.STRIPE_KEY);
+// This is your Stripe CLI webhook secret for testing your endpoint locally.
+const endpointSecret =
+  "whsec_cc75531859f9812e64edae4fc1039d7b9fdd66069536bee4f7732cf4c0521aff";
+
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  async (request, response) => {
+    const sig = request.headers["stripe-signature"];
+
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    } catch (err) {
+      response.status(400).send(`Webhook Error: ${err.message}`);
+      return;
+    }
+
+    if (event.type === "checkout.session.completed") {
+      // updating order status to paid
+      const session = event.data.object;
+      const { orderId } = session.metadata;
+      const paymentStatus = session.payment_status;
+      const paymentMethod = session.payment_method_types[0];
+      const totalAmount = session.amount_total;
+      const currency = session.currency;
+
+      const order = await Order.findByIdAndUpdate(
+        JSON.parse(orderId),
+        {
+          totalPrice: totalAmount / 100,
+          currency,
+          paymentStatus,
+          paymentMethod,
+        },
+        {
+          new: true,
+        }
+      );
+    } else {
+      return;
+    }
+    // Handle the event
+    console.log(`Unhandled event type ${event.type}`);
+
+    // Return a 200 response to acknowledge receipt of the event
+    response.send();
+  }
+);
+
 // pass incoming data
 app.use(express.json());
 
@@ -31,4 +88,5 @@ app.use("/api/v1/orders/", ordersRoute);
 // error middleware
 app.use(notFound);
 app.use(globalErrhandler);
+
 export default app;

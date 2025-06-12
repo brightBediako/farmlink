@@ -32,10 +32,6 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    isFarmer: {
-      type: Boolean,
-      default: false,
-    },
     hasShippingAddress: {
       type: Boolean,
       default: false,

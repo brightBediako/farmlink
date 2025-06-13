@@ -6,8 +6,6 @@ import Coupon from "../models/Coupon.js";
 
 export const createCouponController = asyncHandler(async (req, res) => {
   const { code, startDate, endDate, discount } = req.body;
-  console.log(req.body);
-  //check if admin
   //check if coupon already exists
   const couponsExists = await Coupon.findOne({
     code,
@@ -21,7 +19,7 @@ export const createCouponController = asyncHandler(async (req, res) => {
   }
   //create coupon
   const coupon = await Coupon.create({
-    code: code,
+    code: code?.toUpperCase(),
     startDate,
     endDate,
     discount,
@@ -51,16 +49,12 @@ export const getAllCouponsController = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/coupons/:id
 // @access  Private/Admin
 
-export const getCouponController = asyncHandler(async (req, res) => {
-  const coupon = await Coupon.findOne({ code: req.query.code });
-  //check if is not found
-  if (coupon === null) {
+export const getSingleCouponController = asyncHandler(async (req, res) => {
+  const coupon = await Coupon.findById( req.params.id );
+  if (!coupon) {
     throw new Error("Coupon not found");
   }
-  //check if expired
-  if (coupon.isExpired) {
-    throw new Error("Coupon Expired");
-  }
+  
   res.json({
     status: "success",
     message: "Coupon fetched",

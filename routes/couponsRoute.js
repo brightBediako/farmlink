@@ -2,20 +2,18 @@ import express from "express";
 import {
   createCouponController,
   getAllCouponsController,
-  getCouponController,
+  getSingleCouponController,
   updateCouponController,
   deleteCouponController,
 } from "../controllers/couponsController.js";
-import isAdmin from "../middleware/isAdmin.js";
 import { isLoggedIn } from "../middleware/isLoggedIn.js";
 
 const couponsRoute = express.Router();
 
 couponsRoute.post("/", isLoggedIn, createCouponController);
 couponsRoute.get("/", getAllCouponsController);
-couponsRoute.get("/single", getCouponController);
-couponsRoute.put("/update/:id", isLoggedIn, isAdmin, updateCouponController);
-couponsRoute.delete("/delete/:id", isLoggedIn, isAdmin, deleteCouponController);
-
+couponsRoute.get("/:id", isLoggedIn, getSingleCouponController);
+couponsRoute.put("/update/:id", isLoggedIn, updateCouponController);
+couponsRoute.delete("/delete/:id", isLoggedIn, deleteCouponController);
 
 export default couponsRoute;

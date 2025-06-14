@@ -1,8 +1,7 @@
 ## 💸 FarmLink API
 
 ## Introduction
-
-SpendWy$e is a RESTful API built with **Node.js**, **Express.js**, and **MongoDB** that allows users to securely track their expenses. It features user authentication using **JWT**, secure password handling, and basic **CRUD** operations for managing transactions.
+Full-Service eCommerce Platform for Farmers A system for a managed agricultural marketplace where farmers can register, post their farm products, and receive orders from consumers.
 
 ## 📌 Table of Contents
 

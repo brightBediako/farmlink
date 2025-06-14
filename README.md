@@ -138,7 +138,7 @@ nodemon index.js
 
 ## API Documentation
 
-[FarmLink API Documentation]{https://farmlink-api.onrender.com/}
+[FarmLink API Documentation](https://farmlink-api.onrender.com/)
 
 #### 🔐 Authentication Flow
 

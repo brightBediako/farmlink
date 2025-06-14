@@ -152,22 +152,3 @@ export const deleteUserController = asyncHandler(async (req, res) => {
     });
   }
 });
-
-// desc    block user
-// route   POST /api/v1/users/profile/:id/block
-// access  Private/Admin
-export const blockUserController = asyncHandler(async (req, res) => {
-  // find user
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    throw new Error("User not found");
-  } else {
-    user.isBlocked = true;
-    await user.save();
-    res.json({
-      status: "success",
-      message: "User blocked successfully",
-      user,
-    });
-  }
-});

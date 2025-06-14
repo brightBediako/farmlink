@@ -175,7 +175,14 @@ export const getSingleProductController = asyncHandler(async (req, res) => {
 // access   private
 export const updateProductController = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const product = await Product.findByIdAndUpdate(
+  const product = await Product.findById(id);
+  if (!product) {
+    throw new Error("Product Not Found");
+  }
+  if (product.createdBy.toString() !== req.userAuthId.toString()) {
+    throw new Error("You do not have permission to update this product");
+  }
+  const updatedProduct = await Product.findByIdAndUpdate(
     id,
     {
       ...req.body,
@@ -183,13 +190,10 @@ export const updateProductController = asyncHandler(async (req, res) => {
     },
     { new: true, runValidators: true }
   );
-  if (!product) {
-    throw new Error("Product Not Found");
-  }
   res.json({
     status: "success",
     message: "Product Updated Successfully",
-    product,
+    updatedProduct,
   });
 });
 
@@ -198,10 +202,14 @@ export const updateProductController = asyncHandler(async (req, res) => {
 // access   private
 export const deleteProductController = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const product = await Product.findByIdAndDelete(id);
+  const product = await Product.findById(id);
   if (!product) {
     throw new Error("Product Not Found");
   }
+  if (product.createdBy.toString() !== req.userAuthId.toString()) {
+    throw new Error("You do not have permission to delete this product");
+  }
+  await Product.findByIdAndDelete(id);
   res.json({
     status: "success",
     message: "Product Deleted Successfully",

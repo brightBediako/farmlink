@@ -1,6 +1,7 @@
 ## 💸 FarmLink API
 
 ## Introduction
+
 Full-Service eCommerce Platform for Farmers A system for a managed agricultural marketplace where farmers can register, post their farm products, and receive orders from consumers.
 
 ## 📌 Table of Contents
@@ -48,7 +49,7 @@ farmlink-api/
 │   └── app.js
 ├── config/
 │   └── dbConfig.js
-│ 
+│
 ├── controllers/
 │   ├── brandsController.js
 │   ├── categoriesController.js
@@ -64,7 +65,7 @@ farmlink-api/
 |   ├── isAdmin.js
 |   ├── isFarmer.js
 │   └── isLoggedIn.js
-│ 
+│
 ├── models/
 │   ├── Brand.js
 │   ├── Category.js
@@ -74,7 +75,7 @@ farmlink-api/
 │   ├── Product.js
 │   ├── Review.js
 │   └── User.js
-│ 
+│
 ├── routes/
 │   ├── brandsRoute.js
 │   ├── categoriesRoute.js
@@ -84,16 +85,16 @@ farmlink-api/
 │   ├── productsRoute.js
 │   ├── reviewsRoute.js
 │   └── usersRoute.js
-│ 
+│
 ├── services/
 │   ├──
 │   └──
-│ 
+│
 ├── utils/
 │   ├──
 │   ├──
 │   └──
-│ 
+│
 ├── .env
 ├── .gitignore
 ├── server.js
@@ -136,6 +137,8 @@ nodemon index.js
 ---
 
 ## API Documentation
+
+[FarmLink API Documentation]{https://farmlink-api.onrender.com/}
 
 #### 🔐 Authentication Flow
 

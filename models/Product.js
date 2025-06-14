@@ -1,6 +1,4 @@
-//product schema
 import mongoose from "mongoose";
-import Multer from "multer";
 const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema(
@@ -13,10 +11,6 @@ const ProductSchema = new Schema(
       type: String,
       required: true,
     },
-    brand: {
-      type: String,
-      // required: true,
-    },
     category: {
       type: String,
       ref: "Category",
@@ -24,7 +18,6 @@ const ProductSchema = new Schema(
     },
     sizes: {
       type: [String],
-      // enum: ["S", "M", "L", "XL", "XXL"],
       // required: true,
     },
     colors: {

@@ -38,7 +38,6 @@ export const becomeVendorController = asyncHandler(async (req, res) => {
     phone: req.body.phone,
     paymentInfo,
     image: req?.file?.path,
-    // image: convertedImg,
   });
 
   user.isVendor = true;

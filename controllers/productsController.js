@@ -1,7 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
-import Brand from "../models/Brand.js";
 
 // desc     create new product
 // route    Post /api/v1/products
@@ -13,17 +12,8 @@ export const createProductController = asyncHandler(async (req, res) => {
   }
   const convertedImgs = req.files.map((file) => file.path);
 
-  const {
-    name,
-    description,
-    brand,
-    category,
-    sizes,
-    colors,
-    price,
-    totalQty,
-  } = req.body;
-
+  const { name, description, category, sizes, colors, price, totalQty } =
+    req.body;
 
   // check if product already exists
   const productExists = await Product.findOne({ name });
@@ -38,18 +28,9 @@ export const createProductController = asyncHandler(async (req, res) => {
     throw new Error("Category Not Found");
   }
 
-  // find by Brand
-  const brandFound = await Brand.findOne({
-    name: brand?.toLowerCase(),
-  });
-  if (!brandFound) {
-    throw new Error("Brand Not Found");
-  }
-
   const product = await Product.create({
     name,
     description,
-    brand,
     category,
     sizes,
     colors,
@@ -61,10 +42,6 @@ export const createProductController = asyncHandler(async (req, res) => {
   // push product id to category
   categoryFound.products.push(product._id);
   await categoryFound.save();
-
-  //push the product into brand
-  brandFound.products.push(product._id);
-  await brandFound.save();
 
   res.json({
     status: "success",
@@ -89,13 +66,6 @@ export const getProductController = asyncHandler(async (req, res) => {
   if (req.query.category) {
     productQuery = productQuery.find({
       category: { $regex: req.query.category, $options: "i" },
-    });
-  }
-
-  // filter by brand
-  if (req.query.brand) {
-    productQuery = productQuery.find({
-      brand: { $regex: req.query.brand, $options: "i" },
     });
   }
 

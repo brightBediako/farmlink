@@ -67,6 +67,20 @@ export const getUserProfileController = asyncHandler(async (req, res) => {
   });
 });
 
+// get all users
+// desc    get all users
+// route   GET /api/v1/users
+// access  Private/Admin
+export const getAllUsersController = asyncHandler(async (req, res) => {
+  // find all users
+  const users = await User.find({}).select("-password").sort("-createdAt");
+  res.json({
+    status: "success",
+    message: "Users fetched successfully",
+    users,
+  });
+})
+
 // desc    update user
 // route   POST /api/v1/users/profile/:id
 // access  Private

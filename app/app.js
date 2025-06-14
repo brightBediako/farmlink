@@ -1,7 +1,9 @@
 import dotenv from "dotenv";
-dotenv.config();
+import cors from "cors";
 import Stripe from "stripe";
+dotenv.config();
 import express from "express";
+import path from "path";
 import dbConnect from "../config/dbConnect.js";
 import { globalErrhandler, notFound } from "../middleware/globalErrHandler.js";
 import usersRoute from "../routes/usersRoute.js";
@@ -12,11 +14,14 @@ import brandsRoute from "../routes/brandsRoute.js";
 import reviewsRoute from "../routes/reviewsRoute.js";
 import couponsRoute from "../routes/couponsRoute.js";
 import ordersRoute from "../routes/ordersRoute.js";
+import vendorsRoute from "../routes/vendorsRoute.js";
 import Order from "../models/Order.js";
 
 //db connect
 dbConnect();
 const app = express();
+//cors
+app.use(cors());
 
 // stripe webhook
 const stripe = new Stripe(process.env.STRIPE_KEY);
@@ -73,6 +78,13 @@ app.post(
 
 // pass incoming data
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+// serve static files
+app.use(express.static("public"));
+// home route
+app.get("/", (req, res) => {
+  res.sendFile(path.join("public", "index.html"));
+});
 
 // routes
 app.use("/api/v1/users", usersRoute);
@@ -83,6 +95,7 @@ app.use("/api/v1/brands", brandsRoute);
 app.use("/api/v1/reviews/", reviewsRoute);
 app.use("/api/v1/orders/", ordersRoute);
 app.use("/api/v1/coupons/", couponsRoute);
+app.use("/api/v1/vendors", vendorsRoute);
 
 // error middleware
 app.use(notFound);

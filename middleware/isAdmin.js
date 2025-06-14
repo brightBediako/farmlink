@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+
 const isAdmin = async (req, res, next) => {
   //find the login user
   const user = await User.findById(req.userAuthId);

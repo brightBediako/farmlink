@@ -32,6 +32,10 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isVendor: {
+      type: Boolean,
+      default: false,
+    },
     hasShippingAddress: {
       type: Boolean,
       default: false,

@@ -6,7 +6,6 @@ import {
   updateBrandController,
   deleteBrandController,
 } from "../controllers/brandsController.js";
-// import isAdmin from "../middlewares/isAdmin.js";
 
 import { isLoggedIn } from "../middleware/isLoggedIn.js";
 

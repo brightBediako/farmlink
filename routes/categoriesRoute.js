@@ -7,13 +7,21 @@ import {
   updateCategoryController,
   deleteCategoryController,
 } from "../controllers/categoriesController.js";
+import categoryUpload from "../config/categoryUpload.js";
+import isAdmin from "../middleware/isAdmin.js";
+
 
 const categoriesRoute = express.Router();
 
-categoriesRoute.post("/", isLoggedIn, createCategoryController);
+categoriesRoute.post(
+  "/",
+  isLoggedIn,
+  categoryUpload.single("file"),
+  createCategoryController
+);
 categoriesRoute.get("/", getCategoryController);
 categoriesRoute.get("/:id", getSingleCategoryController);
-categoriesRoute.put("/:id", isLoggedIn, updateCategoryController);
-categoriesRoute.delete("/:id", isLoggedIn, deleteCategoryController);
+categoriesRoute.put("/:id", isLoggedIn, isAdmin, updateCategoryController);
+categoriesRoute.delete("/:id", isLoggedIn, isAdmin, deleteCategoryController);
 
 export default categoriesRoute;

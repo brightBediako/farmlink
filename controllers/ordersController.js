@@ -16,7 +16,7 @@ const stripe = new Stripe(process.env.STRIPE_KEY);
 
 export const createOrdersController = asyncHandler(async (req, res) => {
   // get coupon from query
-const coupon = req?.query?.coupon;
+  const coupon = req?.query?.coupon;
   // check if coupon is provided
   const couponFound = await Coupon.findOne({ code: coupon?.toUpperCase() });
 
@@ -48,7 +48,7 @@ const coupon = req?.query?.coupon;
     user: user?._id,
     orderItems,
     shippingAddress,
-    totalPrice: couponFound ? totalPrice - totalPrice * discount: totalPrice,
+    totalPrice: couponFound ? totalPrice - totalPrice * discount : totalPrice,
   });
 
   // update product qty
@@ -153,5 +153,59 @@ export const updateOrderController = asyncHandler(async (req, res) => {
     success: true,
     message: "Order updated successfully",
     updatedOrder,
+  });
+});
+
+// @desc       get sales sum of orders
+// @route      GET /api/v1/orders/sales/sum
+// @Access     Private/Admin
+export const getOrderStatisticsController = asyncHandler(async (req, res) => {
+  // get minimum and maximum date
+  const orders = await Order.aggregate([
+    {
+      $group: {
+        _id: null,
+        minimumSale: {
+          $min: "$totalPrice",
+        },
+        totalSales: {
+          $sum: "$totalPrice",
+        },
+        maximumSale: {
+          $max: "$totalPrice",
+        },
+        averageSale: {
+          $avg: "$totalPrice",
+        },
+      },
+    },
+  ]);
+
+  const date = new Date();
+  const today = new Date(date.getFullYear(), (date.getMonth(), date.getDate));
+  const salesToday = await Order.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: today,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalSales: {
+          $sum: "$totalPrice",
+        },
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    success: true,
+    message: "Sales sum fetched successfully",
+    orders,
+    salesToday,
+    // totalSales: sumOfTotalSales[0]?.totalSales || 0,
   });
 });

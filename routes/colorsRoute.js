@@ -6,7 +6,6 @@ import {
   updateColorController,
   deleteColorController,
 } from "../controllers/colorsController.js";
-// import isAdmin from "../middlewares/isAdmin.js";
 
 import { isLoggedIn } from "../middleware/isLoggedIn.js";
 const colorsRoute = express.Router();

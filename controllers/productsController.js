@@ -1,11 +1,18 @@
 import asyncHandler from "express-async-handler";
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
+import Brand from "../models/Brand.js";
 
 // desc     create new product
 // route    Post /api/v1/products
 // access   Private/admin,users
 export const createProductController = asyncHandler(async (req, res) => {
+  // check if files are uploaded
+  if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+    throw new Error("Please Upload Product Images");
+  }
+  const convertedImgs = req.files.map((file) => file.path);
+
   const {
     name,
     description,
@@ -13,10 +20,10 @@ export const createProductController = asyncHandler(async (req, res) => {
     category,
     sizes,
     colors,
-    user,
     price,
     totalQty,
   } = req.body;
+
 
   // check if product already exists
   const productExists = await Product.findOne({ name });
@@ -49,10 +56,15 @@ export const createProductController = asyncHandler(async (req, res) => {
     user: req.userAuthId,
     price,
     totalQty,
+    images: convertedImgs,
   });
   // push product id to category
   categoryFound.products.push(product._id);
   await categoryFound.save();
+
+  //push the product into brand
+  brandFound.products.push(product._id);
+  await brandFound.save();
 
   res.json({
     status: "success",

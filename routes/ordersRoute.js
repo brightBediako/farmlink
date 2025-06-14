@@ -12,7 +12,7 @@ import isAdmin from "../middleware/isAdmin.js";
 const ordersRoute = express.Router();
 
 ordersRoute.post("/", isLoggedIn, createOrdersController);
-ordersRoute.get("/", isLoggedIn, isAdmin, getAllOrdersController);
+ordersRoute.get("/", isLoggedIn, getAllOrdersController);
 ordersRoute.get("/:id", isLoggedIn, getSingleOrderController);
 ordersRoute.put("/update/:id", isLoggedIn, isAdmin, updateOrderController);
 ordersRoute.get("/sales/stats", isLoggedIn, isAdmin, getOrderStatisticsController);

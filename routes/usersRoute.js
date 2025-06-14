@@ -16,7 +16,7 @@ const usersRoute = express.Router();
 usersRoute.post("/register", registerUserController);
 usersRoute.post("/login", loginUserController);
 usersRoute.get("/profile/:id", isLoggedIn, getUserProfileController);
-usersRoute.get("/users", isLoggedIn, isAdmin, getAllUsersController);
+usersRoute.get("/all", isLoggedIn, isAdmin, getAllUsersController);
 usersRoute.put("/profile/:id", isLoggedIn, updateUserProfileController);
 usersRoute.put("/update/shipping", isLoggedIn, updateShippingAddressController);
 usersRoute.delete("/profile/:id", isLoggedIn, isAdmin, deleteUserController);

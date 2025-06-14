@@ -67,7 +67,7 @@ export const getUserProfileController = asyncHandler(async (req, res) => {
   });
 });
 
-// get all users
+
 // desc    get all users
 // route   GET /api/v1/users
 // access  Private/Admin

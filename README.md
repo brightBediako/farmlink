@@ -8,18 +8,18 @@ FarmLink is a full-service eCommerce platform for farmers. It provides a managed
 
 ## 📌 Table of Contents
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Running the App](#running-the-app)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Installation](#-installation)
+- [Environment Variables](#-environment-variables)
+- [Running the App](#-running-the-app)
 - [API Documentation](#api-documentation)
-- [Email Functionality](#email-functionality)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contributors](#contributors)
+- [Email Functionality](#-email-functionality)
+- [Testing](#-testing)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Contributors](#-contributors)
 
 ---
 

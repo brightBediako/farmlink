@@ -1,28 +1,38 @@
-## 💸 FarmLink API
+# 💸 FarmLink API
 
 ## Introduction
 
-Full-Service eCommerce Platform for Farmers A system for a managed agricultural marketplace where farmers can register, post their farm products, and receive orders from consumers.
+FarmLink is a full-service eCommerce platform for farmers. It provides a managed agricultural marketplace where farmers can register, post their farm products, and receive orders from consumers.
+
+---
 
 ## 📌 Table of Contents
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Installation](#-installation)
-- [API Documentation](#-api-documentation)
-- [Project Structure](#-project-structure)
-- [Contributors](#-contributors)
-- [License](#-license)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Running the App](#running-the-app)
+- [API Documentation](#api-documentation)
+- [Email Functionality](#email-functionality)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contributors](#contributors)
+
+---
 
 ## 🚀 Features
 
 - ✅ User Registration & Login (JWT-based authentication)
 - 🔐 Protected Routes for authenticated users
-- 📊 Full CRUD Operations on Expenses
+- 📊 Full CRUD Operations on Products, Orders, Categories, Vendors, and more
 - 🔁 Forgot Password and Reset Password (via Nodemailer)
 - 🔄 Token-based Session Management
 - 📦 RESTful API Architecture
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -48,55 +58,48 @@ farmlink-api/
 ├── app/
 │   └── app.js
 ├── config/
-│   └── dbConfig.js
-│
+│   ├── categoryUpload.js
+│   ├── dbConnect.js
+│   ├── fileUpload.js
+│   └── vendorUpload.js
 ├── controllers/
-│   ├── brandsController.js
 │   ├── categoriesController.js
 │   ├── colorsController.js
 │   ├── couponsController.js
-|   ├── orderController.js
-|   ├── productsController.js
-|   ├── reviewsController.js
-│   └── usersController.js
-│
+│   ├── ordersController.js
+│   ├── productsController.js
+│   ├── reviewsController.js
+│   ├── usersController.js
+│   └── vendorsController.js
 ├── middleware/
-|   ├── globalErrHandler.js
-|   ├── isAdmin.js
-|   ├── isFarmer.js
+│   ├── globalErrHandler.js
+│   ├── isAdmin.js
 │   └── isLoggedIn.js
-│
 ├── models/
-│   ├── Brand.js
 │   ├── Category.js
 │   ├── Color.js
 │   ├── Coupon.js
 │   ├── Order.js
 │   ├── Product.js
 │   ├── Review.js
-│   └── User.js
-│
+│   ├── User.js
+│   └── Vendor.js
 ├── routes/
-│   ├── brandsRoute.js
 │   ├── categoriesRoute.js
 │   ├── colorsRoute.js
 │   ├── couponsRoute.js
 │   ├── ordersRoute.js
 │   ├── productsRoute.js
 │   ├── reviewsRoute.js
-│   └── usersRoute.js
-│
+│   ├── usersRoute.js
+│   └── vendorsRoute.js
 ├── services/
-│   ├──
-│   └──
-│
 ├── utils/
-│   ├──
-│   ├──
-│   └──
-│
-├── .env
-├── .gitignore
+│   ├── generateToken.js
+│   ├── getTokenFromHeader.js
+│   └── verifyToken.js
+├── public/
+│   └── index.html
 ├── server.js
 ├── package.json
 ├── package-lock.json
@@ -109,7 +112,7 @@ farmlink-api/
 
 ```bash
 git clone https://github.com/brightBediako/farmlink-api.git
-cd spendWy$e
+cd farmlink-api
 npm install
 ```
 
@@ -117,11 +120,18 @@ npm install
 
 ## 🧾 Environment Variables
 
-Create a `.env` file in the root directory with the following:
+Create a `.env` file in the root directory with the following (add any other required variables as needed):
 
 ```env
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
+EMAIL_USER=your_email@example.com
+EMAIL_PASS=your_email_password
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+STRIPE_SECRET_KEY=your_stripe_secret_key
+PAYSTACK_SECRET_KEY=your_paystack_secret_key
 ```
 
 ---
@@ -129,41 +139,48 @@ JWT_SECRET=your_jwt_secret
 ## ▶️ Running the App
 
 ```bash
-node index.js
+node server.js
 # or with nodemon for development
-nodemon index.js
+nodemon server.js
 ```
 
 ---
 
 ## API Documentation
 
+The API is documented using Postman.  
 [FarmLink API Documentation](https://farmlink-api.onrender.com/)
 
-#### 🔐 Authentication Flow
-
-| Method | Endpoint | Description |
-| ------ | -------- | ----------- |
-| POST   | ``       |             |
-| PUT    | ``       |             |
-| PATCH  | ``       |             |
-| DELETE | ``       |             |
-| GET    | ``       |             |
-
----
-
-### Product Management
+### Example Endpoints
 
 > All routes require the header:  
 > `Authorization: Bearer <token>`
 
-| Method | Endpoint | Description |
-| ------ | -------- | ----------- |
-| POST   | ``       |             |
-| PUT    | ``       |             |
-| PATCH  | ``       |             |
-| DELETE | ``       |             |
-| GET    | ``       |             |
+#### User Authentication
+
+| Method | Endpoint            | Description       |
+| ------ | ------------------- | ----------------- |
+| POST   | /api/users/login    | User login        |
+| POST   | /api/users/register | User registration |
+
+#### Product Management
+
+| Method | Endpoint          | Description        |
+| ------ | ----------------- | ------------------ |
+| GET    | /api/products     | List all products  |
+| POST   | /api/products     | Create a product   |
+| GET    | /api/products/:id | Get product detail |
+| PUT    | /api/products/:id | Update a product   |
+| DELETE | /api/products/:id | Delete a product   |
+
+#### Orders
+
+| Method | Endpoint    | Description     |
+| ------ | ----------- | --------------- |
+| GET    | /api/orders | List all orders |
+| POST   | /api/orders | Create an order |
+
+_...and more for categories, vendors, reviews, etc._
 
 ---
 
@@ -187,8 +204,6 @@ Run test coverage report:
 ```bash
 npm run test:coverage
 ```
-
-![Postman Test](public/image.png)
 
 ---
 
@@ -217,10 +232,10 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 ---
 
-## Contributors
+## 👥 Contributors
 
-[Bright Bediako](bright.bediako.dev@gmail.com)
-[Lemik Manyore](lemik254@gmail.com)
-[Oluwatobi Adelabu](adelabutobi@gmail.com)
+- [Bright Bediako](mailto:bright.bediako.dev@gmail.com)
+- [Lemik Manyore](mailto:lemik254@gmail.com)
+- [Oluwatobi Adelabu](mailto:adelabutobi@gmail.com)
 
 ---

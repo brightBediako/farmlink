@@ -8,12 +8,14 @@ import {
   updateProductController,
   deleteProductController,
 } from "../controllers/productsController.js";
+import isAccountVerified from "../middleware/isAccountVerified.js";
 
 const productsRoute = express.Router();
 
 productsRoute.post(
   "/",
   isLoggedIn,
+  isAccountVerified,
   upload.array("files"),
   createProductController
 );

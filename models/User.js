@@ -36,6 +36,10 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
     hasShippingAddress: {
       type: Boolean,
       default: false,

@@ -45,6 +45,13 @@ export const createProductController = asyncHandler(async (req, res) => {
   categoryFound.products.push(product._id);
   await categoryFound.save();
 
+  // create notification
+  const notification = await Notification.create({
+    userId: req.userAuthId,
+    productId: product._id,
+    message: "Product Created Successfully",
+  });
+
   res.json({
     status: "success",
     message: "Product Created Successfully",

@@ -8,7 +8,7 @@ const isAccountVerified = asyncHandler(async (req, res, next) => {
     //check if account is verified
     if (!user?.isEmailVerified) {
       return res.status(401).json({
-        message: "Action denied, Email not verified",
+        message: "Action denied, account not verified",
       });
     }
     next();

@@ -236,6 +236,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 - [Bright Bediako](mailto:bright.bediako.dev@gmail.com)
 - [Lemik Manyore](mailto:lemik254@gmail.com)
+- [Lemik Manyore](mailto:Lakertoo5@gmail.com)
 - [Oluwatobi Adelabu](mailto:adelabutobi@gmail.com)
 
 ---

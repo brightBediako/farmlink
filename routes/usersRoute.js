@@ -7,6 +7,10 @@ import {
   updateUserProfileController,
   updateShippingAddressController,
   deleteUserController,
+  verifyEmailTokenController,
+  verifyEmailAccountController,
+  forgotPasswordController,
+  resetPasswordController,
 } from "../controllers/usersController.js";
 import { isLoggedIn } from "../middleware/isLoggedIn.js";
 import isAdmin from "../middleware/isAdmin.js";
@@ -20,5 +24,8 @@ usersRoute.get("/all-users", isLoggedIn, isAdmin, getAllUsersController);
 usersRoute.put("/profile/:id", isLoggedIn, updateUserProfileController);
 usersRoute.put("/update/shipping", isLoggedIn, updateShippingAddressController);
 usersRoute.delete("/profile/:id", isLoggedIn, isAdmin, deleteUserController);
-
+usersRoute.get("/verify-email", isLoggedIn, verifyEmailTokenController);
+usersRoute.get("/verify-email/:verifyToken", isLoggedIn, verifyEmailAccountController);
+usersRoute.post("/forgot-password", forgotPasswordController);
+usersRoute.post("/reset-password/:resetToken", resetPasswordController);
 export default usersRoute;

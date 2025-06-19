@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+import crypto from "crypto";
 
 const UserSchema = new Schema(
   {
@@ -40,6 +41,22 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    accountVerificationToken: {
+      type: String,
+      default: null,
+    },
+    accountVerificationExpires: {
+      type: Date,
+      default: null,
+    },
+    passwordResetToken: {
+      type: String,
+      default: null,
+    },
+    passwordResetExpires: {
+      type: Date,
+      default: null,
+    },
     hasShippingAddress: {
       type: Boolean,
       default: false,
@@ -75,6 +92,32 @@ const UserSchema = new Schema(
     timestamps: true,
   }
 );
+
+// generate token for account verification
+UserSchema.methods.generateAccountVerificationToken = function () {
+  const emailToken = crypto.randomBytes(20).toString("hex");
+
+  this.accountVerificationToken = crypto
+    .createHash("sha256")
+    .update(emailToken)
+    .digest("hex");
+
+  this.accountVerificationExpires = Date.now() + 10 * 60 * 1000;
+  return emailToken;
+};
+
+// generate token for password reset
+UserSchema.methods.generatePasswordResetToken = function () {
+  const emailToken = crypto.randomBytes(20).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(emailToken)
+    .digest("hex");
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  return emailToken;
+};
 
 // schema to model
 const User = mongoose.model("User", UserSchema);

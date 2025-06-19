@@ -158,27 +158,27 @@ The API is documented using Postman.
 
 #### User Authentication
 
-| Method | Endpoint            | Description       |
-| ------ | ------------------- | ----------------- |
-| POST   | /api/users/login    | User login        |
-| POST   | /api/users/register | User registration |
+| Method | Endpoint               | Description       |
+| ------ | ---------------------- | ----------------- |
+| POST   | /api/v1/users/login    | User login        |
+| POST   | /api/v1/users/register | User registration |
 
 #### Product Management
 
-| Method | Endpoint          | Description        |
-| ------ | ----------------- | ------------------ |
-| GET    | /api/products     | List all products  |
-| POST   | /api/products     | Create a product   |
-| GET    | /api/products/:id | Get product detail |
-| PUT    | /api/products/:id | Update a product   |
-| DELETE | /api/products/:id | Delete a product   |
+| Method | Endpoint             | Description        |
+| ------ | -------------------- | ------------------ |
+| GET    | /api/v1/products     | List all products  |
+| POST   | /api/v1/products     | Create a product   |
+| GET    | /api/v1/products/:id | Get product detail |
+| PUT    | /api/v1/products/:id | Update a product   |
+| DELETE | /api/v1/products/:id | Delete a product   |
 
 #### Orders
 
-| Method | Endpoint    | Description     |
-| ------ | ----------- | --------------- |
-| GET    | /api/orders | List all orders |
-| POST   | /api/orders | Create an order |
+| Method | Endpoint       | Description     |
+| ------ | -------------- | --------------- |
+| GET    | /api/v1/orders | List all orders |
+| POST   | /api/v1/orders | Create an order |
 
 _...and more for categories, vendors, reviews, etc._
 

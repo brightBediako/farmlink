@@ -15,7 +15,19 @@ export const sendVerificationEmail = async (to, token) => {
     const message = {
       to,
       subject: "FarmLink | Account Verification Token",
-      html: `<p>Click <a href="http://localhost:3000/verify-email/${token}">here</a> to verify your email account.</p>`,
+      html: `<p>${messageText}</p>
+
+<p>
+  👉 
+  <a 
+    href="https://brightbediako.netlify.app/products/${productId}" 
+    style="color: #1a73e8; text-decoration: none; font-weight: bold;" 
+    target="_blank"
+  >
+    View Product
+  </a>
+</p>
+`,
       // html: `<p>Click <a href="${process.env.FRONTEND_URL}/verify-email/${token}">here</a> to verify your email account.</p>`,
     };
     const info = await transporter.sendMail(message);

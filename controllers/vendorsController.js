@@ -40,6 +40,12 @@ export const becomeVendorController = asyncHandler(async (req, res) => {
     image: req?.file?.path,
   });
 
+  // send notification to user that they are now a vendor
+  // const notification = await Notification.create({
+  //   user: userId,
+  //   message: "You are now a vendor",
+  // });
+
   user.isVendor = true;
   await user.save();
 

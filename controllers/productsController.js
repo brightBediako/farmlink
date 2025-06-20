@@ -2,7 +2,8 @@ import asyncHandler from "express-async-handler";
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 import User from "../models/User.js";
-
+import Notification from "../models/Notification.js";
+import { sendNotificationMsg } from "../utils/sendNotificationMsg.js";
 
 // desc     create new product
 // route    Post /api/v1/products
@@ -45,12 +46,31 @@ export const createProductController = asyncHandler(async (req, res) => {
   categoryFound.products.push(product._id);
   await categoryFound.save();
 
+  // fetch user and vendor info
+  const user = await User.findById(req.userAuthId);
+  let creatorName = user?.fullname;
+  // check if user is a vendor
+  let vendor;
+  if (user?.isVendor) {
+    const VendorModel = (await import("../models/Vendor.js")).default;
+    vendor = await VendorModel.findOne({ user: user._id });
+    if (vendor && vendor.farmName) {
+      creatorName = vendor.farmName;
+    }
+  }
+
   // create notification
   const notification = await Notification.create({
     userId: req.userAuthId,
     productId: product._id,
-    message: "Product Created Successfully",
+    message: `<p>
+  🛒 A new product <strong>${product.name}</strong> has been added to the store by <strong>${creatorName}</strong>.
+</p>
+`,
   });
+  if (user && user.email) {
+    await sendNotificationMsg(user.email, product._id, notification.message);
+  }
 
   res.json({
     status: "success",

@@ -7,6 +7,7 @@ import {
   getSingleProductController,
   updateProductController,
   deleteProductController,
+  
 } from "../controllers/productsController.js";
 import isAccountVerified from "../middleware/isAccountVerified.js";
 

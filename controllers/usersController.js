@@ -6,6 +6,8 @@ import { getTokenFromHeader } from "../utils/getTokenFromHeader.js";
 import { sendVerificationEmail } from "../utils/sendAccountNotificationEmail.js";
 import crypto from "crypto";
 import { sendPasswordResetEmail } from "../utils/sendPasswordEmail.js";
+import { sendRegisterMsg } from "../utils/sendRegisterMsg.js";
+import Notification from "../models/Notification.js";
 
 // desc    register
 // route   POST /api/v1/users/register
@@ -27,6 +29,17 @@ export const registerUserController = asyncHandler(async (req, res) => {
     email,
     password: hashedPassword,
   });
+
+  // create notification
+  const notification = await Notification.create({
+    userId: user._id,
+    message: `<p>
+  Welcome to <strong>FarmLink</strong> 🌾 – your trusted platform for buying and selling fresh farm produce! 🥕🍅
+</p>`,
+  });
+  if (user && user.email) {
+    await sendRegisterMsg(user.email, notification.message, user.fullname);
+  }
 
   res.status(201).json({
     status: "success",
@@ -94,8 +107,15 @@ export const updateUserProfileController = asyncHandler(async (req, res) => {
   if (!user) {
     throw new Error("User not found");
   } else {
+    // Check if email is being updated and if it already exists for another user
+    if (email && email !== user.email) {
+      const emailExists = await User.findOne({ email });
+      if (emailExists) {
+        throw new Error("Email already exists. Please use a different email.");
+      }
+      user.email = email;
+    }
     user.fullname = fullname;
-    user.email = email;
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -171,6 +191,56 @@ export const deleteUserController = asyncHandler(async (req, res) => {
   }
 });
 
+// desc    block user
+// route   put /api/v1/users/block/:userId
+// access  Private/Admin
+export const blockUserController = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { isBlocked: true },
+    { new: true }
+  );
+
+  if (!user) {
+    res.status(404).json({
+      message: "User not found",
+    });
+  } else {
+    res.json({
+      status: "success",
+      message: "User blocked successfully",
+      username: user.fullname,
+      isBlocked: user.isBlocked,
+    });
+  }
+});
+
+// desc    block user
+// route   put /api/v1/users/block/:userId
+// access  Private/Admin
+export const unblockUserController = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { isBlocked: false },
+    { new: true }
+  );
+
+  if (!user) {
+    res.status(404).json({
+      message: "User not found",
+    });
+  } else {
+    res.json({
+      status: "success",
+      message: "User unblocked successfully",
+      username: user.fullname,
+      isBlocked: user.isBlocked,
+    });
+  }
+});
+
 // desc    verify email acc token
 // route   POST /api/v1/users/verify-email
 // access  Private
@@ -241,7 +311,7 @@ export const forgotPasswordController = asyncHandler(async (req, res) => {
   // find user
   const user = await User.findOne({ email });
   if (!user) {
-    throw new Error(`User with email ${email} not found`);
+    throw new Error(`User with email not found`);
   }
 
   const token = await user.generatePasswordResetToken();
@@ -254,7 +324,7 @@ export const forgotPasswordController = asyncHandler(async (req, res) => {
   res.json({
     token,
     status: "success",
-    message: `Password reset code sent to your ${email} and expires in 10 minutes`,
+    message: `Password reset code sent to your email and expires in 10 minutes`,
   });
 });
 

@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export const sendPasswordResetEmail = async (to, token) => {
+export const sendNotificationMsg = async (to, productId, messageText) => {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -13,25 +13,27 @@ export const sendPasswordResetEmail = async (to, token) => {
     });
 
     const message = {
-      to,
-      subject: "FarmLink | Password Reset Code",
-      html: `<p>🔐 Click 
+      to: to,
+      subject: "FarmLink | New Product Created",
+      html: `<p>${messageText}</p>
+
+<p>
+  👉 
   <a 
-    href="https://brightbediako.netlify.app/reset-password/${token}" 
-    style="color: #1a73e8; text-decoration: none; font-weight: bold;"
+    href="https://brightbediako.netlify.app/products/${productId}" 
+    style="color: #1a73e8; text-decoration: none; font-weight: bold;" 
     target="_blank"
   >
-    here
-  </a> 
-  to reset your password.
-</p>`,
-      // html: `<p>Click <a href="${process.env.FRONTEND_URL}/verify-email/${token}">here</a> to verify your email account.</p>`,
+    View Product
+  </a>
+</p>
+`,
     };
     const info = await transporter.sendMail(message);
     // console.log("Email sent successfully", info.messageId);
     return info;
   } catch (error) {
     console.log(error);
-    throw new Error("Email not sent");
+    throw new Error("Notification not sent");
   }
 };

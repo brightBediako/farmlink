@@ -67,6 +67,9 @@ export const createOrdersController = asyncHandler(async (req, res) => {
     }
     await product.save();
   });
+
+  // create notification when order is created
+  // const notification = await Notification.create({user: user._id, message: "Order created" });
   //push order into user
   user.orders.push(order?._id);
   await user.save();

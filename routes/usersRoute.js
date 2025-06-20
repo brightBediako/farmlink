@@ -7,6 +7,8 @@ import {
   updateUserProfileController,
   updateShippingAddressController,
   deleteUserController,
+  blockUserController,
+  unblockUserController,
   verifyEmailTokenController,
   verifyEmailAccountController,
   forgotPasswordController,
@@ -24,8 +26,14 @@ usersRoute.get("/all-users", isLoggedIn, isAdmin, getAllUsersController);
 usersRoute.put("/profile/:id", isLoggedIn, updateUserProfileController);
 usersRoute.put("/update/shipping", isLoggedIn, updateShippingAddressController);
 usersRoute.delete("/profile/:id", isLoggedIn, isAdmin, deleteUserController);
-usersRoute.get("/verify-email", isLoggedIn, verifyEmailTokenController);
-usersRoute.get("/verify-email/:verifyToken", isLoggedIn, verifyEmailAccountController);
+usersRoute.put("/block-user/:userId", isLoggedIn, isAdmin, blockUserController);
+usersRoute.put("/unblock-user/:userId", isLoggedIn, isAdmin, unblockUserController);
+usersRoute.put("/verify-email", isLoggedIn, verifyEmailTokenController);
+usersRoute.put(
+  "/verify-email/:verifyToken",
+  isLoggedIn,
+  verifyEmailAccountController
+);
 usersRoute.post("/forgot-password", forgotPasswordController);
 usersRoute.post("/reset-password/:resetToken", resetPasswordController);
 export default usersRoute;

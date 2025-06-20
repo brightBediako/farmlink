@@ -57,6 +57,10 @@ const UserSchema = new Schema(
       type: Date,
       default: null,
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
     hasShippingAddress: {
       type: Boolean,
       default: false,

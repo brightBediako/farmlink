@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export const sendNotificationMsg = async (to, productId, messageText) => {
+export const sendVerificationEmail = async (to, token) => {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -13,27 +13,16 @@ export const sendNotificationMsg = async (to, productId, messageText) => {
     });
 
     const message = {
-      to: to,
-      subject: "FarmLink | New Product Created",
-      html: `<p>${messageText}</p>
-
-<p>
-  👉 
-  <a 
-    href="https://brightbediako.netlify.app/products/${productId}" 
-    style="color: #1a73e8; text-decoration: none; font-weight: bold;" 
-    target="_blank"
-  >
-    View Product
-  </a>
-</p>
-`,
+      to,
+      subject: "FarmLink | Account Verification Token",
+      html: `<p>Click <a href="https://brightbediako.netlify.app/verify-email/${token}">here</a> to verify your email account.</p>`,
+      // html: `<p>Click <a href="${process.env.FRONTEND_URL}/verify-email/${token}">here</a> to verify your email account.</p>`,
     };
     const info = await transporter.sendMail(message);
     // console.log("Email sent successfully", info.messageId);
     return info;
   } catch (error) {
     console.log(error);
-    throw new Error("Notification not sent");
+    throw new Error("Email not sent");
   }
 };

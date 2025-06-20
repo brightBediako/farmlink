@@ -3,10 +3,10 @@ import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js";
 import { getTokenFromHeader } from "../utils/getTokenFromHeader.js";
-import { sendVerificationEmail } from "../utils/sendAccountNotificationEmail.js";
+import { sendVerificationEmail } from "../services/sendAccountVerificationEmail.js";
 import crypto from "crypto";
-import { sendPasswordResetEmail } from "../utils/sendPasswordEmail.js";
-import { sendRegisterMsg } from "../utils/sendRegisterMsg.js";
+import { sendPasswordResetEmail } from "../services/sendPasswordEmail.js";
+import { sendRegisterNotificationEmail } from "../services/sendRegisterNotification.js";
 import Notification from "../models/Notification.js";
 
 // desc    register
@@ -38,7 +38,7 @@ export const registerUserController = asyncHandler(async (req, res) => {
 </p>`,
   });
   if (user && user.email) {
-    await sendRegisterMsg(user.email, notification.message, user.fullname);
+    await sendRegisterNotificationEmail(user.email, user.fullname);
   }
 
   res.status(201).json({

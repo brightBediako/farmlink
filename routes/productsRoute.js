@@ -10,19 +10,21 @@ import {
   
 } from "../controllers/productsController.js";
 import isAccountVerified from "../middleware/isAccountVerified.js";
+import isBlocked from "../middleware/isBlocked.js";
 
 const productsRoute = express.Router();
 
 productsRoute.post(
   "/",
   isLoggedIn,
+  isBlocked,
   isAccountVerified,
   upload.array("files"),
   createProductController
 );
 productsRoute.get("/", getProductController);
 productsRoute.get("/:id", getSingleProductController);
-productsRoute.put("/:id", isLoggedIn, updateProductController);
-productsRoute.delete("/:id", isLoggedIn, deleteProductController);
+productsRoute.put("/:id", isLoggedIn, isBlocked, isAccountVerified, updateProductController);
+productsRoute.delete("/:id", isLoggedIn, isBlocked, isAccountVerified, deleteProductController);
 
 export default productsRoute;

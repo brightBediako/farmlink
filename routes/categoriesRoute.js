@@ -16,6 +16,7 @@ const categoriesRoute = express.Router();
 categoriesRoute.post(
   "/",
   isLoggedIn,
+  isAdmin,
   categoryUpload.single("file"),
   createCategoryController
 );

@@ -1,6 +1,10 @@
 import asyncHandler from "express-async-handler";
 import Vendor from "../models/Vendor.js";
 import User from "../models/User.js";
+import { sendVendorNotificationEmail } from "../services/sendVendorNotification.js";
+import Notification from "../models/Notification.js";
+
+
 
 // @desc    Convert user to vendor
 // @route   POST /api/v1/vendor/become
@@ -41,13 +45,16 @@ export const becomeVendorController = asyncHandler(async (req, res) => {
   });
 
   // send notification to user that they are now a vendor
-  // const notification = await Notification.create({
-  //   user: userId,
-  //   message: "You are now a vendor",
-  // });
+  const notification = await Notification.create({
+    userId: userId,
+    message: `<p>
+  Welcome to <strong>FarmLink</strong> 🌾 – your trusted platform for buying and selling fresh farm produce! 🥕🍅
+</p>`,
+  });
 
   user.isVendor = true;
   await user.save();
+  await sendVendorNotificationEmail(user.email, vendor.farmName);
 
   res.status(201).json({
     status: "success",

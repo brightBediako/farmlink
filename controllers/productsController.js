@@ -3,7 +3,7 @@ import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 import User from "../models/User.js";
 import Notification from "../models/Notification.js";
-import { sendNotificationMsg } from "../utils/sendNotificationMsg.js";
+import { sendProductNotificationEmail } from "../services/sendProductNotification.js";
 
 // desc     create new product
 // route    Post /api/v1/products
@@ -69,7 +69,11 @@ export const createProductController = asyncHandler(async (req, res) => {
 `,
   });
   if (user && user.email) {
-    await sendNotificationMsg(user.email, product._id, notification.message);
+    await sendProductNotificationEmail(
+      user.email,
+      product._id,
+      notification.message
+    );
   }
 
   res.json({

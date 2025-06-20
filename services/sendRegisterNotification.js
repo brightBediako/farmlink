@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export const sendRegisterMsg = async (to, messageText, fullname) => {
+export const sendRegisterNotificationEmail = async (to, fullname) => {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,

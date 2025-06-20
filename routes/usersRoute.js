@@ -25,12 +25,12 @@ usersRoute.get("/profile/:id", isLoggedIn, getUserProfileController);
 usersRoute.get("/all-users", isLoggedIn, isAdmin, getAllUsersController);
 usersRoute.put("/profile/:id", isLoggedIn, updateUserProfileController);
 usersRoute.put("/update/shipping", isLoggedIn, updateShippingAddressController);
-usersRoute.delete("/profile/:id", isLoggedIn, isAdmin, deleteUserController);
+usersRoute.delete("/delete-profile/:id", isLoggedIn, isAdmin, deleteUserController);
 usersRoute.put("/block-user/:userId", isLoggedIn, isAdmin, blockUserController);
 usersRoute.put("/unblock-user/:userId", isLoggedIn, isAdmin, unblockUserController);
 usersRoute.put("/verify-email", isLoggedIn, verifyEmailTokenController);
 usersRoute.put(
-  "/verify-email/:verifyToken",
+  "/verify-account/:verifyToken",
   isLoggedIn,
   verifyEmailAccountController
 );

@@ -6,7 +6,8 @@ import Order from "../models/Order.js";
 import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Coupon from "../models/Coupon.js";
-
+import { sendOrderNotificationEmail } from "../services/sendOrderNotification.js";
+import Notification from "../models/Notification.js";
 // @desc       create orders
 // @route      POST /api/v1/orders
 // @Access     Public
@@ -69,8 +70,12 @@ export const createOrdersController = asyncHandler(async (req, res) => {
   });
 
   // create notification when order is created
-  // const notification = await Notification.create({user: user._id, message: "Order created" });
-  //push order into user
+  const notification = await Notification.create({
+    userId: user._id,
+    message: "New order created",
+  });
+  await sendOrderNotificationEmail(user.email, order?._id, notification.message);
+
   user.orders.push(order?._id);
   await user.save();
 

@@ -27,10 +27,13 @@ FarmLink is a full-service eCommerce platform for farmers. It provides a managed
 
 - ✅ User Registration & Login (JWT-based authentication)
 - 🔐 Protected Routes for authenticated users
-- 📊 Full CRUD Operations on Products, Orders, Categories, Vendors, and more
+- 📊 Full CRUD Operations on Products, Orders, Categories, Vendors, Coupons, Colors, Reviews, and more
 - 🔁 Forgot Password and Reset Password (via Nodemailer)
 - 🔄 Token-based Session Management
 - 📦 RESTful API Architecture
+- 📧 Email Verification and Notifications
+- 🛒 Stripe Payment Integration
+- ☁️ Image Uploads via Cloudinary
 
 ---
 
@@ -39,15 +42,13 @@ FarmLink is a full-service eCommerce platform for farmers. It provides a managed
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: JWT (JSON Web Tokens)
-- **Password Hashing**: bcryptjs
-- **Validation**: express-validator
+- **Password Hashing**: bcrypt
 - **Email Service**: Nodemailer
-- **Payment Gateway**: Stripe, PayStack
+- **Payment Gateway**: Stripe
 - **File Storage**: Cloudinary
-- **Security**: Helmet, CORS, Rate Limiter
+- **Security**: CORS
 - **Environment Variables**: dotenv
-- **Testing**: Jest / Mocha
-- **Documentation**: Swagger / Postman
+- **Testing**: Jest / Mocha (planned)
 
 ---
 
@@ -73,12 +74,15 @@ farmlink-api/
 │   └── vendorsController.js
 ├── middleware/
 │   ├── globalErrHandler.js
+│   ├── isAccountVerified.js
 │   ├── isAdmin.js
+│   ├── isBlocked.js
 │   └── isLoggedIn.js
 ├── models/
 │   ├── Category.js
 │   ├── Color.js
 │   ├── Coupon.js
+│   ├── Notification.js
 │   ├── Order.js
 │   ├── Product.js
 │   ├── Review.js
@@ -94,6 +98,12 @@ farmlink-api/
 │   ├── usersRoute.js
 │   └── vendorsRoute.js
 ├── services/
+│   ├── sendAccountVerificationEmail.js
+│   ├── sendOrderNotification.js
+│   ├── sendPasswordEmail.js
+│   ├── sendProductNotification.js
+│   ├── sendRegisterNotification.js
+│   └── sendVendorNotification.js
 ├── utils/
 │   ├── generateToken.js
 │   ├── getTokenFromHeader.js
@@ -130,8 +140,7 @@ EMAIL_PASS=your_email_password
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-STRIPE_SECRET_KEY=your_stripe_secret_key
-PAYSTACK_SECRET_KEY=your_paystack_secret_key
+STRIPE_KEY=your_stripe_secret_key
 ```
 
 ---
@@ -141,68 +150,153 @@ PAYSTACK_SECRET_KEY=your_paystack_secret_key
 ```bash
 node server.js
 # or with nodemon for development
-nodemon server.js
+npm run server
 ```
 
 ---
 
 ## API Documentation
 
-The API is documented using Postman.  
-[FarmLink API Documentation](https://farmlink-api.onrender.com/)
+The API is documented using Postman and the public HTML documentation in `public/index.html`.
 
-### Example Endpoints
+### Main Endpoints
 
-> All routes require the header:  
+> All protected routes require the header:  
 > `Authorization: Bearer <token>`
 
-#### User Authentication
+#### Users
 
-| Method | Endpoint               | Description       |
-| ------ | ---------------------- | ----------------- |
-| POST   | /api/v1/users/login    | User login        |
-| POST   | /api/v1/users/register | User registration |
+| Method | Endpoint                                        | Description                   |
+| ------ | ----------------------------------------------- | ----------------------------- |
+| POST   | /api/v1/users/register                          | Register a new user           |
+| POST   | /api/v1/users/login                             | User login                    |
+| GET    | /api/v1/users/profile                           | Get user profile              |
+| PUT    | /api/v1/users/profile/:id                       | Update user profile           |
+| PUT    | /api/v1/users/update/shipping                   | Update shipping address       |
+| GET    | /api/v1/users                                   | Get all users (admin)         |
+| DELETE | /api/v1/users/profile/:id                       | Delete user (admin)           |
+| PUT    | /api/v1/users/block/:userId                     | Block user (admin)            |
+| PUT    | /api/v1/users/unblock/:userId                   | Unblock user (admin)          |
+| POST   | /api/v1/users/verify-email                      | Send email verification token |
+| POST   | /api/v1/users/verify-email/:verifyToken         | Verify email account          |
+| POST   | /api/v1/users/forgot-password                   | Send password reset token     |
+| POST   | /api/v1/users/verify-password-reset/:resetToken | Reset password                |
 
-#### Product Management
+#### Products
 
-| Method | Endpoint             | Description        |
-| ------ | -------------------- | ------------------ |
-| GET    | /api/v1/products     | List all products  |
-| POST   | /api/v1/products     | Create a product   |
-| GET    | /api/v1/products/:id | Get product detail |
-| PUT    | /api/v1/products/:id | Update a product   |
-| DELETE | /api/v1/products/:id | Delete a product   |
+| Method | Endpoint             | Description                      |
+| ------ | -------------------- | -------------------------------- |
+| GET    | /api/v1/products     | List all products (with filters) |
+| POST   | /api/v1/products     | Create a product (with images)   |
+| GET    | /api/v1/products/:id | Get product detail               |
+| PUT    | /api/v1/products/:id | Update a product                 |
+| DELETE | /api/v1/products/:id | Delete a product                 |
+
+#### Categories
+
+| Method | Endpoint               | Description                    |
+| ------ | ---------------------- | ------------------------------ |
+| GET    | /api/v1/categories     | List all categories            |
+| POST   | /api/v1/categories     | Create a category (with image) |
+| GET    | /api/v1/categories/:id | Get category detail            |
+| PUT    | /api/v1/categories/:id | Update a category              |
+| DELETE | /api/v1/categories/:id | Delete a category              |
+
+#### Vendors
+
+| Method | Endpoint               | Description                  |
+| ------ | ---------------------- | ---------------------------- |
+| POST   | /api/v1/vendors/become | Become a vendor (with image) |
+| GET    | /api/v1/vendors        | List all vendors             |
+| GET    | /api/v1/vendors/:id    | Get vendor detail            |
+| PUT    | /api/v1/vendors/:id    | Update vendor profile        |
+| DELETE | /api/v1/vendors/:id    | Delete vendor profile        |
 
 #### Orders
 
-| Method | Endpoint       | Description     |
-| ------ | -------------- | --------------- |
-| GET    | /api/v1/orders | List all orders |
-| POST   | /api/v1/orders | Create an order |
+| Method | Endpoint                  | Description                   |
+| ------ | ------------------------- | ----------------------------- |
+| GET    | /api/v1/orders            | List all orders (admin)       |
+| POST   | /api/v1/orders            | Create an order (with Stripe) |
+| GET    | /api/v1/orders/:id        | Get order detail              |
+| PUT    | /api/v1/orders/update/:id | Update order status (admin)   |
+| GET    | /api/v1/orders/sales/sum  | Get order sales statistics    |
 
-_...and more for categories, vendors, reviews, etc._
+#### Coupons
+
+| Method | Endpoint            | Description       |
+| ------ | ------------------- | ----------------- |
+| GET    | /api/v1/coupons     | List all coupons  |
+| POST   | /api/v1/coupons     | Create a coupon   |
+| GET    | /api/v1/coupons/:id | Get coupon detail |
+| PUT    | /api/v1/coupons/:id | Update a coupon   |
+| DELETE | /api/v1/coupons/:id | Delete a coupon   |
+
+#### Colors
+
+| Method | Endpoint           | Description      |
+| ------ | ------------------ | ---------------- |
+| GET    | /api/v1/colors     | List all colors  |
+| POST   | /api/v1/colors     | Create a color   |
+| GET    | /api/v1/colors/:id | Get color detail |
+| PUT    | /api/v1/colors/:id | Update a color   |
+| DELETE | /api/v1/colors/:id | Delete a color   |
+
+#### Reviews
+
+| Method | Endpoint                   | Description                   |
+| ------ | -------------------------- | ----------------------------- |
+| GET    | /api/v1/reviews            | List all reviews              |
+| POST   | /api/v1/reviews/:productID | Create a review for a product |
+| DELETE | /api/v1/reviews/:id        | Delete a review               |
+
+---
+
+## 🧩 Middleware
+
+- `globalErrHandler.js` – Global error handler for API responses
+- `notFound` – 404 handler for undefined routes
+- `isLoggedIn.js` – Auth middleware (JWT)
+- `isAdmin.js` – Admin role check
+- `isBlocked.js` – Blocked user check
+- `isAccountVerified.js` – Email verification check
+
+## ⚙️ Config Files
+
+- `dbConnect.js` – MongoDB connection
+- `categoryUpload.js`, `fileUpload.js`, `vendorUpload.js` – Multer/Cloudinary upload configs
+
+## 🛠️ Services
+
+- `sendAccountVerificationEmail.js` – Send account verification emails
+- `sendOrderNotification.js` – Send order notification emails
+- `sendPasswordEmail.js` – Send password reset emails
+- `sendProductNotification.js` – Send product notification emails
+- `sendRegisterNotification.js` – Send registration notification emails
+- `sendVendorNotification.js` – Send vendor notification emails
+
+## 🧰 Utilities
+
+- `generateToken.js` – JWT token generation
+- `getTokenFromHeader.js` – Extract JWT from request headers
+- `verifyToken.js` – Verify JWT tokens
 
 ---
 
 ## 💌 Email Functionality
 
 - Users can reset their password by receiving a secure reset link via email.
+- Email verification and notifications for registration, orders, and vendor actions.
 - Emails are sent using **Nodemailer** and your configured email provider.
 
 ---
 
 ## 🧪 Testing
 
-Run unit and integration tests:
+Run unit and integration tests (if available):
 
 ```bash
 npm test
-```
-
-Run test coverage report:
-
-```bash
-npm run test:coverage
 ```
 
 ---

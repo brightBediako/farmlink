@@ -15,7 +15,7 @@ import isBlocked from "../middleware/isBlocked.js";
 const productsRoute = express.Router();
 
 productsRoute.post(
-  "/",
+  "/add-product",
   isLoggedIn,
   isBlocked,
   isAccountVerified,
@@ -24,7 +24,7 @@ productsRoute.post(
 );
 productsRoute.get("/", getProductController);
 productsRoute.get("/:id", getSingleProductController);
-productsRoute.put("/:id", isLoggedIn, isBlocked, isAccountVerified, updateProductController);
+productsRoute.put("/update-product/:id", isLoggedIn, isBlocked, isAccountVerified, updateProductController);
 productsRoute.delete("/:id", isLoggedIn, isBlocked, isAccountVerified, deleteProductController);
 
 export default productsRoute;

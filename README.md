@@ -137,6 +137,8 @@ MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 EMAIL_USER=your_email@example.com
 EMAIL_PASS=your_email_password
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
@@ -330,7 +332,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 - [Bright Bediako](mailto:bright.bediako.dev@gmail.com)
 - [Lemik Manyore](mailto:lemik254@gmail.com)
-- [Lemik Manyore](mailto:Lakertoo5@gmail.com)
+- [Lekatoo Nangayai](mailto:Lakertoo5@gmail.com)
 - [Oluwatobi Adelabu](mailto:adelabutobi@gmail.com)
 
 ---

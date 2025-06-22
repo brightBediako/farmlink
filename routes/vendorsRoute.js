@@ -15,7 +15,7 @@ import vendorUpload from "../config/vendorUpload.js";
 const vendorsRoute = express.Router();
 
 vendorsRoute.post(
-  "/becomeVendor",
+  "/become-vendor",
   isLoggedIn,
   isBlocked,
   isAccountVerified,
@@ -23,7 +23,7 @@ vendorsRoute.post(
   becomeVendorController
 );
 vendorsRoute.get("/", isLoggedIn, isAdmin, getAllVendorsController);
-vendorsRoute.get("/:id", isLoggedIn, getSingleVendorController);
+vendorsRoute.get("/profile/:id", isLoggedIn, getSingleVendorController);
 vendorsRoute.put("/update/:id", isLoggedIn, isBlocked, isAccountVerified, updateVendorController);
 vendorsRoute.delete("/delete-vendor/:id", isLoggedIn, isBlocked, isAccountVerified, isAdmin, deleteVendorController);
 

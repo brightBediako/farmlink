@@ -8,7 +8,7 @@ const isBlocked = asyncHandler(async (req, res, next) => {
     //check if account is verified
     if (user?.isBlocked) {
       return res.status(401).json({
-        message: "Action denied, Account blocked, please contact support",
+        message: "Acess denied, Account blocked, please contact support",
       });
     }
     next();

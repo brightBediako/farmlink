@@ -7,18 +7,20 @@ import { sendVerificationEmail } from "../services/sendAccountVerificationEmail.
 import crypto from "crypto";
 import { sendPasswordResetEmail } from "../services/sendPasswordEmail.js";
 import { sendRegisterNotificationEmail } from "../services/sendRegisterNotification.js";
+import { sendUpdateNotificationEmail } from "../services/sendUpdateNotification.js";
 import Notification from "../models/Notification.js";
 
 // desc    register
 // route   POST /api/v1/users/register
 // access  Private/Admin
 export const registerUserController = asyncHandler(async (req, res) => {
-  const { fullname, email, password } = req.body;
+  const { fullname, email, phone, password } = req.body;
 
   // check if user exist
   const userExists = await User.findOne({ email });
   if (userExists) {
     throw new Error("User already Exists");
+    return;
   }
   // hash password
   const salt = await bcrypt.genSalt(10);
@@ -27,6 +29,7 @@ export const registerUserController = asyncHandler(async (req, res) => {
   const user = await User.create({
     fullname,
     email,
+    phone,
     password: hashedPassword,
   });
 
@@ -100,7 +103,7 @@ export const getAllUsersController = asyncHandler(async (req, res) => {
 // route   POST /api/v1/users/profile/:id
 // access  Private
 export const updateUserProfileController = asyncHandler(async (req, res) => {
-  const { fullname, email, password } = req.body;
+  const { fullname, email, phone, password } = req.body;
 
   // find user
   const user = await User.findById(req.userAuthId);
@@ -115,11 +118,39 @@ export const updateUserProfileController = asyncHandler(async (req, res) => {
       }
       user.email = email;
     }
-    user.fullname = fullname;
+    // Check if phone is being updated and if it already exists for another user
+    if (phone && phone !== user.phone) {
+      const phoneExists = await User.findOne({ phone });
+      if (phoneExists) {
+        throw new Error(
+          "Phone number already exists. Please use a different phone number."
+        );
+      }
+      user.phone = phone;
+    }
+    // Update user fields
+    if (fullname) {
+      user.fullname = fullname;
+    }
+    if (email) {
+      user.email = email;
+    }
+    if (phone) {
+      user.phone = phone;
+    }
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
       user.password = hashedPassword;
+    }
+
+    // create notification
+    const notification = await Notification.create({
+      userId: user._id,
+      message: `<p>✅ Your email has been <strong>updated successfully</strong>.</p>`,
+    });
+    if (user && user.email) {
+      await sendUpdateNotificationEmail(user.email, user.fullname);
     }
     await user.save();
     res.json({

@@ -7,7 +7,7 @@ import {
   getSingleProductController,
   updateProductController,
   deleteProductController,
-  
+  getVendorProductsController,
 } from "../controllers/productsController.js";
 import isAccountVerified from "../middleware/isAccountVerified.js";
 import isBlocked from "../middleware/isBlocked.js";
@@ -24,7 +24,20 @@ productsRoute.post(
 );
 productsRoute.get("/", getProductController);
 productsRoute.get("/:id", getSingleProductController);
-productsRoute.put("/update-product/:id", isLoggedIn, isBlocked, isAccountVerified, updateProductController);
-productsRoute.delete("/:id", isLoggedIn, isBlocked, isAccountVerified, deleteProductController);
+productsRoute.put(
+  "/update-product/:id",
+  isLoggedIn,
+  isBlocked,
+  isAccountVerified,
+  updateProductController
+);
+productsRoute.delete(
+  "/:id",
+  isLoggedIn,
+  isBlocked,
+  isAccountVerified,
+  deleteProductController
+);
+productsRoute.get("/my-products", isLoggedIn, getVendorProductsController);
 
 export default productsRoute;

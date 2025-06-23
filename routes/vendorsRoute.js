@@ -5,6 +5,7 @@ import {
   getSingleVendorController,
   deleteVendorController,
   updateVendorController,
+  updateVendorStatusController,
 } from "../controllers/vendorsController.js";
 import { isLoggedIn } from "../middleware/isLoggedIn.js";
 import isAdmin from "../middleware/isAdmin.js";
@@ -16,15 +17,31 @@ const vendorsRoute = express.Router();
 
 vendorsRoute.post(
   "/become-vendor",
-  isLoggedIn,
-  isBlocked,
-  isAccountVerified,
   vendorUpload.single("file"),
   becomeVendorController
 );
 vendorsRoute.get("/", isLoggedIn, isAdmin, getAllVendorsController);
 vendorsRoute.get("/profile/:id", isLoggedIn, getSingleVendorController);
-vendorsRoute.put("/update/:id", isLoggedIn, isBlocked, isAccountVerified, updateVendorController);
-vendorsRoute.delete("/delete-vendor/:id", isLoggedIn, isBlocked, isAccountVerified, isAdmin, deleteVendorController);
+vendorsRoute.put(
+  "/update/:id",
+  isLoggedIn,
+  isBlocked,
+  isAccountVerified,
+  updateVendorController
+);
+vendorsRoute.put(
+  "/status/:id",
+  isLoggedIn,
+  isAdmin,
+  updateVendorStatusController
+);
+vendorsRoute.delete(
+  "/delete-vendor/:id",
+  isLoggedIn,
+  isBlocked,
+  isAccountVerified,
+  isAdmin,
+  deleteVendorController
+);
 
 export default vendorsRoute;

@@ -9,12 +9,13 @@ import { sendPasswordResetEmail } from "../services/sendPasswordEmail.js";
 import { sendRegisterNotificationEmail } from "../services/sendRegisterNotification.js";
 import { sendUpdateNotificationEmail } from "../services/sendUpdateNotification.js";
 import Notification from "../models/Notification.js";
+import Product from "../models/Product.js";
 
 // desc    register
 // route   POST /api/v1/users/register
 // access  Private/Admin
 export const registerUserController = asyncHandler(async (req, res) => {
-  const { fullname, email, phone, password } = req.body;
+  const { fullname, email, phone, password, role } = req.body;
 
   // check if user exist
   const userExists = await User.findOne({ email });
@@ -31,6 +32,7 @@ export const registerUserController = asyncHandler(async (req, res) => {
     email,
     phone,
     password: hashedPassword,
+    role: role || "customer",
   });
 
   // create notification
@@ -65,7 +67,14 @@ export const loginUserController = asyncHandler(async (req, res) => {
     res.json({
       status: "success",
       message: "Login Successfully",
-      userFound,
+      user: {
+        _id: userFound._id,
+        fullname: userFound.fullname,
+        email: userFound.email,
+        phone: userFound.phone,
+        role: userFound.role,
+        // add other fields as needed
+      },
       token: generateToken(userFound?._id),
     });
   } else {
@@ -78,7 +87,10 @@ export const loginUserController = asyncHandler(async (req, res) => {
 // access  Private
 export const getUserProfileController = asyncHandler(async (req, res) => {
   //find the user
-  const user = await User.findById(req.userAuthId).populate("orders");
+  const user = await User.findById(req.userAuthId).populate([
+    "orders",
+    "vendorProfile",
+  ]);
   res.json({
     status: "success",
     message: "User profile fetched successfully",
@@ -91,7 +103,10 @@ export const getUserProfileController = asyncHandler(async (req, res) => {
 // access  Private/Admin
 export const getAllUsersController = asyncHandler(async (req, res) => {
   // find all users
-  const users = await User.find({}).select("-password").sort("-createdAt");
+  const users = await User.find({})
+    .select("-password")
+    .sort("-createdAt")
+    .populate("vendorProfile");
   res.json({
     status: "success",
     message: "Users fetched successfully",
@@ -325,6 +340,14 @@ export const verifyEmailAccountController = asyncHandler(async (req, res) => {
   userFound.accountVerificationToken = null;
   userFound.accountVerificationExpires = null;
 
+  // If user is a vendor, activate their vendor profile
+  if (userFound.vendorProfile) {
+    const Vendor = (await import("../models/Vendor.js")).default;
+    await Vendor.findByIdAndUpdate(userFound.vendorProfile, {
+      status: "active",
+    });
+  }
+
   // resave user
   await userFound.save();
   res.json({
@@ -399,4 +422,37 @@ export const resetPasswordController = asyncHandler(async (req, res) => {
     status: "success",
     message: "Password reset successfully",
   });
+});
+
+export const updateProductController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const product = await Product.findById(id);
+
+  if (!product) {
+    throw new Error("Product Not Found");
+  }
+
+  // Only allow if the logged-in user is the creator
+  if (product.user.toString() !== req.userAuthId.toString()) {
+    throw new Error("You do not have permission to update this product");
+  }
+
+  // ...proceed with update logic
+});
+
+export const deleteProductController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const product = await Product.findById(id);
+
+  if (!product) {
+    throw new Error("Product Not Found");
+  }
+
+  // Only allow if the logged-in user is the creator
+  if (product.user.toString() !== req.userAuthId.toString()) {
+    throw new Error("You do not have permission to delete this product");
+  }
+
+  await product.remove();
+  res.json({ status: "success", message: "Product deleted successfully" });
 });

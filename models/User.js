@@ -36,13 +36,14 @@ const UserSchema = new Schema(
         ref: "WishList",
       },
     ],
-    isAdmin: {
-      type: Boolean,
-      default: false,
+    role: {
+      type: String,
+      enum: ["customer", "vendor", "admin"],
+      default: "customer",
     },
-    isVendor: {
-      type: Boolean,
-      default: false,
+    vendorProfile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Vendor",
     },
     isEmailVerified: {
       type: Boolean,
@@ -113,7 +114,7 @@ UserSchema.methods.generateAccountVerificationToken = function () {
     .update(emailToken)
     .digest("hex");
 
-  this.accountVerificationExpires = Date.now() + 10 * 60 * 1000;
+  this.accountVerificationExpires = Date.now() + 1 * 60 * 60 * 1000;
   return emailToken;
 };
 

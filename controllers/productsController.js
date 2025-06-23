@@ -31,6 +31,34 @@ export const createProductController = asyncHandler(async (req, res) => {
     throw new Error("Category Not Found");
   }
 
+  // fetch user and vendor info
+  const user = await User.findById(req.userAuthId);
+  // Email verification check
+  if (!user.isEmailVerified) {
+    throw new Error("Please verify your email before uploading products.");
+  }
+  // Vendor status check
+  if (user.role === "vendor") {
+    const VendorModel = (await import("../models/Vendor.js")).default;
+    const vendor = await VendorModel.findOne({ user: user._id });
+    if (!vendor || vendor.status !== "active") {
+      throw new Error(
+        "Your vendor account is not verified/active. Please wait for admin approval before uploading products."
+      );
+    }
+  }
+
+  let creatorName = user?.fullname;
+  // check if user is a vendor
+  let vendor;
+  if (user?.role === "vendor") {
+    const VendorModel = (await import("../models/Vendor.js")).default;
+    vendor = await VendorModel.findOne({ user: user._id });
+    if (vendor && vendor.farmName) {
+      creatorName = vendor.farmName;
+    }
+  }
+
   const product = await Product.create({
     name,
     description,
@@ -45,19 +73,6 @@ export const createProductController = asyncHandler(async (req, res) => {
   // push product id to category
   categoryFound.products.push(product._id);
   await categoryFound.save();
-
-  // fetch user and vendor info
-  const user = await User.findById(req.userAuthId);
-  let creatorName = user?.fullname;
-  // check if user is a vendor
-  let vendor;
-  if (user?.isVendor) {
-    const VendorModel = (await import("../models/Vendor.js")).default;
-    vendor = await VendorModel.findOne({ user: user._id });
-    if (vendor && vendor.farmName) {
-      creatorName = vendor.farmName;
-    }
-  }
 
   // create notification
   const notification = await Notification.create({
@@ -216,5 +231,15 @@ export const deleteProductController = asyncHandler(async (req, res) => {
   res.json({
     status: "success",
     message: "Product Deleted Successfully",
+  });
+});
+
+// Get all products for the logged-in vendor
+export const getVendorProductsController = asyncHandler(async (req, res) => {
+  const products = await Product.find({ user: req.userAuthId });
+  res.json({
+    status: "success",
+    message: "Vendor products fetched successfully",
+    products,
   });
 });

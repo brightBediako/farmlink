@@ -23,6 +23,7 @@ productsRoute.post(
   createProductController
 );
 productsRoute.get("/", getProductController);
+productsRoute.get("/my-products", isLoggedIn, getVendorProductsController);
 productsRoute.get("/:id", getSingleProductController);
 productsRoute.put(
   "/update-product/:id",
@@ -38,6 +39,5 @@ productsRoute.delete(
   isAccountVerified,
   deleteProductController
 );
-productsRoute.get("/my-products", isLoggedIn, getVendorProductsController);
 
 export default productsRoute;

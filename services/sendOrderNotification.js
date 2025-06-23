@@ -14,14 +14,9 @@ export const sendOrderNotificationEmail = async (to, orderId, messageText) => {
 
     const message = {
       to: to,
-      subject: "FarmLink | `<p>${messageText}</p>`",
-      html: `<p>
-  👉 
-  <a 
-    href="https://brightbediako.netlify.app/orders/${orderId}" 
-    style="color: #1a73e8; text-decoration: none; font-weight: bold;" 
-    target="_blank"
-  >
+      subject: "FarmLink | New Order",
+      html: `<p>${messageText}</p>
+      <p>👉 <a href="https://farmlink.vercel.app/orders/${orderId}" style="color: #1a73e8; text-decoration: none; font-weight: bold;" target="_blank">
     View Order
   </a>
 </p>

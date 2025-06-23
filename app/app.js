@@ -15,6 +15,9 @@ import couponsRoute from "../routes/couponsRoute.js";
 import ordersRoute from "../routes/ordersRoute.js";
 import vendorsRoute from "../routes/vendorsRoute.js";
 import Order from "../models/Order.js";
+import { sendOrderNotificationEmail } from "../services/sendOrderNotification.js";
+import User from "../models/User.js";
+import Product from "../models/Product.js";
 
 //db connect
 dbConnect();
@@ -64,17 +67,71 @@ app.post(
           new: true,
         }
       );
+      // Send order details to customer
+      if (order) {
+        const user = await User.findById(order.user);
+        if (user && user.email) {
+          const messageText = `
+            <h3>Order Confirmation</h3>
+            <p>Thank you for your purchase! Here are your order details:</p>
+            <ul>
+              <li><strong>Order Number:</strong> ${order.orderNumber}</li>
+              <li><strong>Payment Status:</strong> ${order.paymentStatus}</li>
+              <li><strong>Payment Method:</strong> ${order.paymentMethod}</li>
+              <li><strong>Total Price:</strong> ${order.totalPrice} ${order.currency}</li>
+            </ul>
+            <p>You can view your order details in your account.</p>
+          `;
+          await sendOrderNotificationEmail(user.email, order._id, messageText);
+        }
+      }
+
+      if (order && order.orderItems && order.orderItems.length > 0) {
+        // Get all product IDs from the order
+        const productIds = order.orderItems.map(
+          (item) => item._id || item.product || item
+        ); // adjust as per your schema
+
+        // Fetch all products in the order
+        const products = await Product.find({ _id: { $in: productIds } });
+
+        // Map vendor user IDs to their products
+        const vendorMap = {};
+        products.forEach((product) => {
+          const vendorId = product.user.toString();
+          if (!vendorMap[vendorId]) vendorMap[vendorId] = [];
+          vendorMap[vendorId].push(product);
+        });
+
+        // Notify each vendor
+        for (const [vendorId, vendorProducts] of Object.entries(vendorMap)) {
+          const vendorUser = await User.findById(vendorId);
+          if (vendorUser && vendorUser.email) {
+            const productList = vendorProducts
+              .map((p) => `<li>${p.name}</li>`)
+              .join("");
+            const messageText = `
+              <h3>New Order for Your Products</h3>
+              <p>The following products have been ordered:</p>
+              <ul>${productList}</ul>
+              <p>Order Number: <strong>${order.orderNumber}</strong></p>
+              <p>Payment Status: <strong>${order.paymentStatus}</strong></p>
+              <p>Payment Method: <strong>${order.paymentMethod}</strong></p>
+              <p>Total Price: <strong>${order.totalPrice} ${order.currency}</strong></p>
+            `;
+            await sendOrderNotificationEmail(
+              vendorUser.email,
+              order._id,
+              messageText
+            );
+          }
+        }
+      }
     } else {
       return;
     }
-    // Handle the event
-    console.log(`Unhandled event type ${event.type}`);
-
-    // Return a 200 response to acknowledge receipt of the event
-    response.send();
   }
 );
-
 // pass incoming data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -84,7 +141,6 @@ app.use(express.static("public"));
 app.get("/", (req, res) => {
   res.sendFile(path.join("public", "index.html"));
 });
-
 // routes
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/products", productsRoute);
@@ -94,9 +150,7 @@ app.use("/api/v1/reviews/", reviewsRoute);
 app.use("/api/v1/orders/", ordersRoute);
 app.use("/api/v1/coupons/", couponsRoute);
 app.use("/api/v1/vendors", vendorsRoute);
-
 // error middleware
 app.use(notFound);
 app.use(globalErrhandler);
-
 export default app;

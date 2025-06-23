@@ -1,8 +1,8 @@
 # 💸 FarmLink API
 
-## Introduction
+## Overview
 
-FarmLink is a full-service eCommerce platform for farmers. It provides a managed agricultural marketplace where farmers can register, post their farm products, and receive orders from consumers.
+FarmLink is a full-service eCommerce platform for farmers and consumers. It allows farmers (vendors) to register, post their farm products, and receive orders from consumers. The platform supports robust user roles, product management, order processing, and notification features.
 
 ---
 
@@ -334,5 +334,99 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 - [Lemik Manyore](mailto:lemik254@gmail.com)
 - [Lekatoo Nangayai](mailto:Lakertoo5@gmail.com)
 - [Oluwatobi Adelabu](mailto:adelabutobi@gmail.com)
+
+---
+
+## Registration Flow
+
+### 1. Customer Registration
+
+- Endpoint: `POST /api/v1/users/register`
+- Fields: `fullname`, `email`, `phone`, `password`
+- The user is created with the role `customer` by default.
+- Email verification is required before the user can become a vendor or upload products.
+
+### 2. Vendor Registration (Two-Step)
+
+- After registering as a customer, the user can become a vendor.
+- Endpoint: `POST /api/v1/vendors/become-vendor`
+- Fields: `userId` (from registration), `farmName`, `country`, `location`, `phone`, and other vendor details.
+- The vendor profile is created with status `pending` and must be verified by an admin before uploading products.
+- Email verification is required before becoming a vendor.
+
+---
+
+## Product Upload Restrictions
+
+- Only users with verified emails (`isEmailVerified: true`) can upload products.
+- Vendors must have their vendor status set to `active` (approved by admin) to upload products.
+- Admins can upload and manage all products.
+
+---
+
+## Order and Payment Flow
+
+- Orders are created and processed via Stripe payments.
+- After successful payment, the following notifications are sent:
+  - **Customer:** Receives an email with order details (order number, payment status, payment method, total price, currency).
+  - **Vendors:** Each vendor whose products are included in the order receives an email notification listing their products in the order and the order/payment details.
+
+---
+
+## Admin Controls
+
+- Admins can approve or suspend vendors via `PUT /api/v1/vendors/status/:id`.
+- Only vendors with `status: active` can upload products.
+- Admins can view all products via `/api/v1/products/my-products`.
+
+---
+
+## API Endpoints (Key)
+
+### Users
+
+- `POST /api/v1/users/register` – Register a new user
+- `POST /api/v1/users/login` – Login
+- `POST /api/v1/users/verify-email/:verifyToken` – Verify email
+
+### Vendors
+
+- `POST /api/v1/vendors/become-vendor` – Become a vendor (after registering as a user)
+- `PUT /api/v1/vendors/status/:id` – Admin: update vendor status
+
+### Products
+
+- `POST /api/v1/products/add-product` – Add a product (vendor/admin only, with restrictions)
+- `GET /api/v1/products/my-products` – Get all products for the logged-in vendor or all products for admin
+
+### Orders
+
+- `POST /api/v1/orders` – Create an order
+- `GET /api/v1/orders/:id` – Get order details
+
+---
+
+## Notifications
+
+- Email notifications are sent for:
+  - Registration
+  - Vendor approval
+  - Order confirmation (to customer)
+  - Order notification (to vendors)
+
+---
+
+## Payment
+
+- Stripe is used for payment processing.
+- Webhook endpoint `/webhook` updates order status and triggers notifications after payment.
+
+---
+
+## Setup
+
+- Configure environment variables for MongoDB, Stripe, and email (SMTP) in a `.env` file.
+- Run `npm install` to install dependencies.
+- Start the server with `npm start` or `npm run server` (for nodemon).
 
 ---

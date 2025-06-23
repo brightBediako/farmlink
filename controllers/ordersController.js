@@ -72,7 +72,7 @@ export const createOrdersController = asyncHandler(async (req, res) => {
   // create notification when order is created
   const notification = await Notification.create({
     userId: user._id,
-    message: "New order created",
+    message: `New order has been created with order id ${order?._id}`,
   });
   await sendOrderNotificationEmail(user.email, order?._id, notification.message);
 

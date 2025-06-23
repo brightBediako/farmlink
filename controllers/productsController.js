@@ -236,10 +236,24 @@ export const deleteProductController = asyncHandler(async (req, res) => {
 
 // Get all products for the logged-in vendor
 export const getVendorProductsController = asyncHandler(async (req, res) => {
-  const products = await Product.find({ user: req.userAuthId });
+  const user = await User.findById(req.userAuthId);
+  if (user.role !== "admin" && user.role !== "vendor") {
+    return res.status(403).json({
+      message: "Access denied. Only vendors and admins can view this resource.",
+    });
+  }
+  let products;
+  if (user.role === "admin") {
+    products = await Product.find();
+  } else {
+    products = await Product.find({ user: req.userAuthId });
+  }
   res.json({
     status: "success",
-    message: "Vendor products fetched successfully",
+    message:
+      user.role === "admin"
+        ? "All products fetched successfully"
+        : "Vendor products fetched successfully",
     products,
   });
 });

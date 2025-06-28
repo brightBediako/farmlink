@@ -9,6 +9,7 @@ const notificationSchema = mongoose.Schema(
       ref: "User",
     },
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    vendorId: { type: mongoose.Schema.Types.ObjectId, ref: "Vendor" },
     message: { type: String, required: true },
     isRead: { type: Boolean, default: false },
   },

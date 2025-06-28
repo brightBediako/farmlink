@@ -3,7 +3,7 @@ import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 import User from "../models/User.js";
 import Notification from "../models/Notification.js";
-import { sendProductNotificationEmail } from "../services/sendProductNotification.js";
+import { sendProductNotificationEmail } from "../services/emailNotification.js";
 
 // desc     create new product
 // route    Post /api/v1/products

@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Vendor from "../models/Vendor.js";
 import User from "../models/User.js";
-import { sendVendorNotificationEmail } from "../services/sendVendorNotification.js";
+import { sendVendorNotificationEmail } from "../services/emailNotification.js";
 import Notification from "../models/Notification.js";
 import mongoose from "mongoose";
 
@@ -22,13 +22,6 @@ export const becomeVendorController = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  // Require email verification
-  // if (!user.isEmailVerified) {
-  //   return res
-  //     .status(403)
-  //     .json({ message: "Please verify your email before becoming a vendor." });
-  // }
-
   // Prevent blocked users
   if (user.isBlocked) {
     return res
@@ -36,13 +29,21 @@ export const becomeVendorController = asyncHandler(async (req, res) => {
       .json({ message: "Blocked users cannot become vendors." });
   }
 
-  // Prevent duplicate vendor profiles
-  if (user.role === "vendor" || user.vendorProfile) {
-    return res.status(400).json({ message: "You are already a vendor." });
+  // Check if user is already a vendor (check both user role and existing vendor profile)
+  if (user.role === "farmer" || user.vendorProfile) {
+    return res.status(400).json({ message: "You are already a farmer." });
+  }
+
+  // Check if a vendor profile already exists in the database for this user
+  const existingVendor = await Vendor.findOne({ user: userId });
+  if (existingVendor) {
+    return res
+      .status(400)
+      .json({ message: "A farmer profile already exists for this user." });
   }
 
   // Validate required vendor fields
-  const requiredFields = ["farmName", "location", "address", "country", ];
+  const requiredFields = ["farmName", "location", "address", "country"];
   for (const field of requiredFields) {
     if (!req.body[field]) {
       return res
@@ -77,11 +78,11 @@ export const becomeVendorController = asyncHandler(async (req, res) => {
   const notification = await Notification.create({
     userId: userId,
     message: `<p>
-  Welcome to <strong>FarmLink</strong> 🌾 – your trusted platform for buying and selling fresh farm produce! 🥕🍅
+  Welcome to <strong>FarmLink</strong> – your trusted platform for buying and selling fresh farm produce!
 </p>`,
   });
 
-  user.role = "vendor";
+  user.role = "farmer";
   user.vendorProfile = vendor._id;
   await user.save();
   await sendVendorNotificationEmail(user.email, vendor.farmName);
@@ -89,7 +90,7 @@ export const becomeVendorController = asyncHandler(async (req, res) => {
   res.status(201).json({
     status: "success",
     message:
-      "You are now a vendor. Your account is pending verification. Please login to the platform and wait for admin approval before uploading products.",
+      "You are now a farmer. Your account is pending verification. Please login to the platform and wait for admin approval before uploading products.",
     vendor,
   });
 });

@@ -6,15 +6,15 @@ import Order from "../models/Order.js";
 import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Coupon from "../models/Coupon.js";
-import { sendOrderNotificationEmail } from "../services/sendOrderNotification.js";
+import { sendOrderUpdateNotificationEmail } from "../services/emailNotification.js";
 import Notification from "../models/Notification.js";
-// @desc       create orders
-// @route      POST /api/v1/orders
-// @Access     Public
 
 // stripe initialization
 const stripe = new Stripe(process.env.STRIPE_KEY);
 
+// @desc       create orders
+// @route      POST /api/v1/orders
+// @Access     Public
 export const createOrdersController = asyncHandler(async (req, res) => {
   // get coupon from query
   let discount = 0;
@@ -68,13 +68,6 @@ export const createOrdersController = asyncHandler(async (req, res) => {
     }
     await product.save();
   });
-
-  // create notification when order is created
-  const notification = await Notification.create({
-    userId: user._id,
-    message: `New order has been created with order id ${order?._id}`,
-  });
-  await sendOrderNotificationEmail(user.email, order?._id, notification.message);
 
   user.orders.push(order?._id);
   await user.save();
@@ -160,6 +153,23 @@ export const updateOrderController = asyncHandler(async (req, res) => {
     },
     { new: true }
   );
+
+  if (!updatedOrder) {
+    throw new Error("Order not found");
+  }
+
+  // send email notification to user
+  const user = await User.findById(updatedOrder.user);
+  if (user) {
+    const messageText = `Your order #${updatedOrder._id} status has been updated to ${req.body.status}.`;
+    sendOrderUpdateNotificationEmail(user.email, updatedOrder._id, messageText);
+  }
+
+  // create notification for the user
+  await Notification.create({
+    userId: updatedOrder.user,
+    message: `Your order #${updatedOrder.orderNumber} status has been updated to <strong>${req.body.status}</strong>.`,
+  });
 
   res.json({
     success: true,

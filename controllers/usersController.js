@@ -3,11 +3,13 @@ import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js";
 import { getTokenFromHeader } from "../utils/getTokenFromHeader.js";
-import { sendVerificationEmail } from "../services/sendAccountVerificationEmail.js";
 import crypto from "crypto";
-import { sendPasswordResetEmail } from "../services/sendPasswordEmail.js";
-import { sendRegisterNotificationEmail } from "../services/sendRegisterNotification.js";
-import { sendUpdateNotificationEmail } from "../services/sendUpdateNotification.js";
+import {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+  sendRegisterNotificationEmail,
+  sendUpdateNotificationEmail,
+} from "../services/emailNotification.js";
 import Notification from "../models/Notification.js";
 import Product from "../models/Product.js";
 
@@ -32,14 +34,14 @@ export const registerUserController = asyncHandler(async (req, res) => {
     email,
     phone,
     password: hashedPassword,
-    role: role || "customer",
+    role: role || "buyer",
   });
 
   // create notification
   const notification = await Notification.create({
     userId: user._id,
     message: `<p>
-  Welcome to <strong>FarmLink</strong> 🌾 – your trusted platform for buying and selling fresh farm produce! 🥕🍅
+  Welcome to <strong>FarmLink</strong> – your trusted platform for buying and selling fresh farm produce!
 </p>`,
   });
   if (user && user.email) {
@@ -162,7 +164,7 @@ export const updateUserProfileController = asyncHandler(async (req, res) => {
     // create notification
     const notification = await Notification.create({
       userId: user._id,
-      message: `<p>✅ Your email has been <strong>updated successfully</strong>.</p>`,
+      message: `<p>Your email has been <strong>updated successfully</strong>.</p>`,
     });
     if (user && user.email) {
       await sendUpdateNotificationEmail(user.email, user.fullname);
@@ -312,8 +314,7 @@ export const verifyEmailTokenController = asyncHandler(async (req, res) => {
   res.json({
     token,
     status: "success",
-    message:
-      "Email verification token sent to your email and expires in 10 minutes",
+    message:"Email verification token sent to your email and expires in 10 minutes",
   });
 });
 

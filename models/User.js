@@ -38,8 +38,8 @@ const UserSchema = new Schema(
     ],
     role: {
       type: String,
-      enum: ["customer", "vendor", "admin"],
-      default: "customer",
+      enum: ["buyer", "farmer", "admin"],
+      default: "buyer",
     },
     vendorProfile: {
       type: mongoose.Schema.Types.ObjectId,

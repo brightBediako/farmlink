@@ -15,7 +15,7 @@ import couponsRoute from "../routes/couponsRoute.js";
 import ordersRoute from "../routes/ordersRoute.js";
 import vendorsRoute from "../routes/vendorsRoute.js";
 import Order from "../models/Order.js";
-import { sendOrderNotificationEmail } from "../services/sendOrderNotification.js";
+import { sendOrderNotificationEmail } from "../services/emailNotification.js";
 import User from "../models/User.js";
 import Product from "../models/Product.js";
 
@@ -74,12 +74,28 @@ app.post(
           const messageText = `
             <h3>Order Confirmation</h3>
             <p>Thank you for your purchase! Here are your order details:</p>
-            <ul>
-              <li><strong>Order Number:</strong> ${order.orderNumber}</li>
-              <li><strong>Payment Status:</strong> ${order.paymentStatus}</li>
-              <li><strong>Payment Method:</strong> ${order.paymentMethod}</li>
-              <li><strong>Total Price:</strong> ${order.totalPrice} ${order.currency}</li>
-            </ul>
+            <table style="border-collapse: collapse; width: 100%;">
+              <tr>
+                <th>Field</th>
+                <th>Value</th>
+              </tr>
+              <tr>
+                <td>Order Number</td>
+                <td>${order.orderNumber}</td>
+              </tr>
+              <tr>
+                <td>Payment Status</td>
+                <td>${order.paymentStatus}</td>
+              </tr>
+              <tr>
+                <td>Payment Method</td>
+                <td>${order.paymentMethod}</td>
+              </tr>
+              <tr>
+                <td>Total Price</td>
+                <td>${order.totalPrice} ${order.currency}</td>
+              </tr>
+            </table>
             <p>You can view your order details in your account.</p>
           `;
           await sendOrderNotificationEmail(user.email, order._id, messageText);

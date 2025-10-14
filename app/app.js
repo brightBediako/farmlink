@@ -6,6 +6,7 @@ import express from "express";
 import path from "path";
 import dbConnect from "../config/dbConnect.js";
 import { globalErrhandler, notFound } from "../middleware/globalErrHandler.js";
+import authRoute from "../routes/authRoute.js";
 import usersRoute from "../routes/usersRoute.js";
 import productsRoute from "../routes/productsRoute.js";
 import categoriesRoute from "../routes/categoriesRoute.js";
@@ -95,6 +96,10 @@ app.post(
                 <td>Total Price</td>
                 <td>${order.totalPrice} ${order.currency}</td>
               </tr>
+              <tr>
+                <td>Order Date</td>
+                <td>${order.createdAt.toLocaleDateString()}</td>
+              </tr>
             </table>
             <p>You can view your order details in your account.</p>
           `;
@@ -157,7 +162,9 @@ app.use(express.static("public"));
 app.get("/", (req, res) => {
   res.sendFile(path.join("public", "index.html"));
 });
-// routes
+
+// custom routes
+app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/products", productsRoute);
 app.use("/api/v1/categories", categoriesRoute);
@@ -166,7 +173,9 @@ app.use("/api/v1/reviews/", reviewsRoute);
 app.use("/api/v1/orders/", ordersRoute);
 app.use("/api/v1/coupons/", couponsRoute);
 app.use("/api/v1/vendors", vendorsRoute);
+
 // error middleware
 app.use(notFound);
 app.use(globalErrhandler);
+
 export default app;

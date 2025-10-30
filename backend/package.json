@@ -1,11 +1,11 @@
 {
-  "name": "farmlink-api",
+  "name": "farmlink",
   "version": "1.0.0",
   "description": "Full-Service eCommerce Platform for Farmers  A system for a managed agricultural marketplace where farmers can register, post their farm products, and receive orders from consumers.",
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "server": "nodemon server.js",
+    "server": "node server.js",
     "start": "node server.js"
   },
   "author": "",

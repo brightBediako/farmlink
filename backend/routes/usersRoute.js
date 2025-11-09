@@ -1,7 +1,7 @@
 import express from "express";
 import {
-  registerUserController,
-  loginUserController,
+  // registerUserController,
+  // loginUserController,
   getUserProfileController,
   getAllUsersController,
   updateUserProfileController,
@@ -19,8 +19,8 @@ import isAdmin from "../middleware/isAdmin.js";
 
 const usersRoute = express.Router();
 
-usersRoute.post("/register", registerUserController);
-usersRoute.post("/login", loginUserController);
+// usersRoute.post("/register", registerUserController);
+// usersRoute.post("/login", loginUserController);
 usersRoute.get("/profile/:id", isLoggedIn, getUserProfileController);
 usersRoute.get("/all-users", isLoggedIn, isAdmin, getAllUsersController);
 usersRoute.put("/profile/:id", isLoggedIn, updateUserProfileController);
@@ -36,4 +36,6 @@ usersRoute.put(
 );
 usersRoute.post("/forgot-password", forgotPasswordController);
 usersRoute.post("/reset-password/:resetToken", resetPasswordController);
+
+
 export default usersRoute;

@@ -50,6 +50,7 @@ const perks = [
       "We’ve pledged 1% of sales to the preservation and restoration of the natural environment.",
   },
 ];
+
 export default function Example() {
   return (
     <div className="bg-white">

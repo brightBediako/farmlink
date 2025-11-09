@@ -25,7 +25,6 @@ import ProductsFilters from "./components/Users/Products/ProductsFilters";
 import CustomerProfile from "./components/Users/Profile/CustomerProfile";
 import AddReview from "./components/Users/Reviews/AddReview";
 import UpdateCategory from "./components/Admin/Categories/UpdateCategory";
-
 import OrdersList from "./components/Admin/Orders/OdersList";
 import ManageOrders from "./components/Admin/Orders/ManageOrders";
 import Customers from "./components/Admin/Orders/Customers";

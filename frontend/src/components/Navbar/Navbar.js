@@ -71,7 +71,7 @@ export default function Navbar() {
                       <a
                         href={`${baseURL}/products?category=clothing`}
                         className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-                        Clothing...
+                        Clothing
                       </a>
 
                       <a
@@ -160,7 +160,7 @@ export default function Navbar() {
                   {/* Logo (lg+) */}
                   <div className="hidden lg:flex lg:items-center">
                     <Link to="/">
-                      <span className="sr-only">Your Company</span>
+                      <span className="sr-only">FarmLink</span>
                       <img
                         className="h-32 pt-2 w-auto"
                         src={logo}
@@ -178,7 +178,7 @@ export default function Navbar() {
                             <a
                               href={`${baseURL}/products?category=clothing`}
                               className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
-                              Clothing...
+                              Clothing
                             </a>
 
                             <a

@@ -6,10 +6,11 @@ const RegisterForm = () => {
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
+    phone: "",
     password: "",
   });
   //---Destructuring---
-  const { fullname, email, password } = formData;
+  const { fullname, email, phone, password } = formData;
   //---onchange handler----
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,6 +63,14 @@ const RegisterForm = () => {
                     placeholder="Enter your email"
                   />
                   <input
+                    name="phone"
+                    value={phone}
+                    onChange={onChangeHandler}
+                    className="w-full mb-4 px-12 py-6 border border-gray-200 focus:ring-blue-300 focus:border-blue-300 rounded-md"
+                    type="phone"
+                    placeholder="Enter your phone number"
+                  />
+                  <input
                     name="password"
                     value={password}
                     onChange={onChangeHandler}
@@ -84,7 +93,7 @@ const RegisterForm = () => {
           className="hidden lg:block lg:absolute top-0 bottom-0 right-0 lg:w-3/6 bg-center bg-cover bg-no-repeat"
           style={{
             backgroundImage:
-              'url("https://cdn.pixabay.com/photo/2017/03/29/04/47/high-heels-2184095_1280.jpg")',
+              'url("https://cdn.pixabay.com/photo/2018/05/09/21/42/vegetables-3386212_1280.jpg")',
           }}
         />
       </section>

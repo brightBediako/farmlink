@@ -81,7 +81,7 @@ const Login = () => {
               className="w-full md:w-2/6 h-128 md:h-auto flex items-center lg:items-end px-4 pb-20 bg-cover bg-no-repeat"
               style={{
                 backgroundImage:
-                  'url("https://cdn.pixabay.com/photo/2017/03/29/04/47/high-heels-2184095_1280.jpg")',
+                  'url("https://cdn.pixabay.com/photo/2021/10/11/11/12/countryside-6700296_1280.jpg")',
               }}></div>
           </div>
         </div>

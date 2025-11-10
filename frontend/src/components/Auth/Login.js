@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction } from "../../redux/slices/auth/authSlice";
+import ErrorMsg from "../ErrorMsg/ErrorMsg";
 
 
 const Login = () => {
@@ -26,12 +27,17 @@ const Login = () => {
     dispatch(loginUserAction(formData));
   };
 
-  //select store data
-  const { loading, userAuth } = {};
-  //redirect
-  if (userAuth?.userInfo?.status) {
-    window.location.href = "/admin";
-  }
+  // get data from store
+  const { error, loading, userInfo } = useSelector((state) => state?.users?.userAuth);
+
+  // redirect if logged in success
+  // if (userInfo?.userFound?.isAdmin) {
+  //   window.location.href = "/admin";
+  // } else {
+  //   window.location.href = "/customer-profile";
+  // }
+
+
   return (
     <>
       <section className="py-20 bg-gray-100 overflow-x-hidden">
@@ -44,8 +50,10 @@ const Login = () => {
                   Login to your account
                 </h3>
                 <p className="mb-10 font-semibold font-heading">
-                  Happy to see you again
+                  Welcome back!
                 </p>
+                {/* err */}
+                {error && <ErrorMsg message={error?.message} />}
                 <form
                   className="flex flex-wrap -mx-4"
                   onSubmit={onSubmitHandler}>
@@ -79,9 +87,13 @@ const Login = () => {
                   </div>
 
                   <div className="w-full px-4">
+                    {loading ? 
+                    <button disabled className="bg-gray-800 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
+                      Loading...
+                    </button>: 
                     <button className="bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
                       Login
-                    </button>
+                    </button>}
                   </div>
                 </form>
               </div>

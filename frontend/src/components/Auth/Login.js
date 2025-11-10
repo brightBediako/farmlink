@@ -1,9 +1,15 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { loginUserAction } from "../../redux/slices/auth/authSlice";
+
 
 const Login = () => {
+  // dispatch
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
-    email: "admin@gmail.com",
-    password: "12345",
+    email: "brightbediako.x@gmail.com",
+    password: "1234567",
   });
   //---Destructuring---
   const { email, password } = formData;
@@ -15,6 +21,9 @@ const Login = () => {
   //---onsubmit handler----
   const onSubmitHandler = (e) => {
     e.preventDefault();
+    const formData = { email, password };
+    //dispatch login action
+    dispatch(loginUserAction(formData));
   };
 
   //select store data
@@ -81,7 +90,7 @@ const Login = () => {
               className="w-full md:w-2/6 h-128 md:h-auto flex items-center lg:items-end px-4 pb-20 bg-cover bg-no-repeat"
               style={{
                 backgroundImage:
-                  'url("https://cdn.pixabay.com/photo/2017/03/29/04/47/high-heels-2184095_1280.jpg")',
+                  'url("https://cdn.pixabay.com/photo/2021/10/11/11/12/countryside-6700296_1280.jpg")',
               }}></div>
           </div>
         </div>

@@ -22,7 +22,7 @@ export const loginUserAction = createAsyncThunk(
     async({email,password}, { rejectWithValue, getState, dispatch }) => { 
         try {
             // http call
-            const {data} = await axios.post(`${baseURL}users/login`, {
+            const {data} = await axios.post(`${baseURL}auth/login`, {
                 email,
                 password,
             });
@@ -35,7 +35,7 @@ export const loginUserAction = createAsyncThunk(
 );
 
 // users slice
-const usersSlice = createSlice({
+const authSlice = createSlice({
     name: "users",
     initialState,
     extraReducers: (builder) => {
@@ -56,5 +56,5 @@ const usersSlice = createSlice({
 });
 
 // generate reducer
-const usersReducer = usersSlice.reducer;
-export default usersReducer;
+const authReducer = authSlice.reducer;
+export default authReducer;

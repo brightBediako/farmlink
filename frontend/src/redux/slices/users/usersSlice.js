@@ -23,6 +23,27 @@ const initialState = {
   },
 };
 
+//user profile action
+export const getUserProfileAction = createAsyncThunk(
+  "users/profile-fetched",
+  async (payload, { rejectWithValue, getState, dispatch }) => {
+    try {
+      //get token
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.get(`${baseURL}users/profile`, config);
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
 //update user shipping address action
 export const updateUserShippingAddressAction = createAsyncThunk(
   "users/update-shipping-address",
@@ -71,27 +92,6 @@ export const updateUserShippingAddressAction = createAsyncThunk(
         },
         config
       );
-      return data;
-    } catch (error) {
-      console.log(error);
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-//user profile action
-export const getUserProfileAction = createAsyncThunk(
-  "users/profile-fetched",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    try {
-      //get token
-      const token = getState()?.users?.userAuth?.userInfo?.token;
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const { data } = await axios.get(`${baseURL}/users/profile`, config);
       return data;
     } catch (error) {
       console.log(error);

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction } from "../../redux/slices/auth/authSlice";
 import ErrorMsg from "../ErrorMsg/ErrorMsg";
+import LoadingComponent from "../LoadingComp/LoadingComponent";
 
 
 const Login = () => {
@@ -87,13 +88,12 @@ const Login = () => {
                   </div>
 
                   <div className="w-full px-4">
-                    {loading ? 
-                    <button disabled className="bg-gray-800 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
-                      Loading...
-                    </button>: 
-                    <button className="bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
-                      Login
-                    </button>}
+                    {loading ?
+                      <LoadingComponent /> :
+                      <button className="bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
+                        Login
+                      </button>
+                    }
                   </div>
                 </form>
               </div>

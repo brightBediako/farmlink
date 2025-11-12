@@ -41,6 +41,10 @@ const UserSchema = new Schema(
       enum: ["buyer", "farmer", "admin"],
       default: "buyer",
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
     vendorProfile: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vendor",

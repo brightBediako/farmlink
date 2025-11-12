@@ -29,7 +29,7 @@ import OrdersList from "./components/Admin/Orders/OdersList";
 import ManageOrders from "./components/Admin/Orders/ManageOrders";
 import Customers from "./components/Admin/Orders/Customers";
 import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
-import AuthRouthe from "./components/Auth/AuthRoute";
+import AuthRoute from "./components/Auth/AuthRoute";
 import AdminRoutes from "./components/Auth/AdminRoutes";
 
 

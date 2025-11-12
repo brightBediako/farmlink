@@ -16,6 +16,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../Navbar/logo3.png";
+
+
 const ordersLinks = [
   {
     name: "Dashboard",
@@ -178,7 +180,7 @@ const brandsLinks = [
   },
 ];
 
-export default function Example() {
+export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

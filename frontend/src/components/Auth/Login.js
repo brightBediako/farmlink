@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction } from "../../redux/slices/auth/authSlice";
 import ErrorMsg from "../ErrorMsg/ErrorMsg";
@@ -28,15 +28,17 @@ const Login = () => {
     dispatch(loginUserAction(formData));
   };
 
-  // get data from store
-  const { error, loading, userInfo } = useSelector((state) => state?.users?.userAuth);
+  //get data from store
+  const { error, loading, userInfo } = useSelector(
+    (state) => state?.users?.userAuth
+  );
 
-  // redirect if logged in success
-  // if (userInfo?.userFound?.isAdmin) {
-  //   window.location.href = "/admin";
-  // } else {
-  //   window.location.href = "/customer-profile";
-  // }
+  //redirect
+  useEffect(() => {
+    if (userInfo?.userFound) {
+      window.location.href = "/";
+    }
+  }, [userInfo]);
 
 
   return (

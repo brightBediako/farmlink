@@ -170,6 +170,7 @@ const productSlice = createSlice({
   name: "products",
   initialState,
   extraReducers: (builder) => {
+    
     //create product
     builder.addCase(createProductAction.pending, (state) => {
       state.loading = true;

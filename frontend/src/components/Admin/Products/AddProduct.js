@@ -2,15 +2,19 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import SuccessMsg from "../../SuccessMsg/SuccessMsg";
+import { createProductAction } from "../../../redux/slices/products/productSlices";
+
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
 
 export default function AddProduct() {
+  // dispatch
+  const dispatch = useDispatch();
+
   let categories,
     sizeOptionsCoverted,
     handleSizeChange,
@@ -42,6 +46,20 @@ export default function AddProduct() {
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
+    //dispatch action
+    const { name, description, category, sizes, brand, colors, price, totalQty, images } = formData;
+    const formDataToSend = {
+      name,
+      description,
+      category,
+      sizes,
+      brand,
+      colors,
+      price,
+      totalQty,
+      files: images instanceof FileList ? Array.from(images) : [],
+    };
+    dispatch(createProductAction(formDataToSend));
     //reset form data
     setFormData({
       name: "",

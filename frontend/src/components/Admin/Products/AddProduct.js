@@ -24,8 +24,8 @@ export default function AddProduct() {
     setSizeOption(sizes);
   };
 
-  // converte size options
-  const sizeOptionsCoverted = sizes?.map((size) => {
+  // converted size options
+  const sizeOptionsConverted = sizes?.map((size) => {
     return {
       value: size,
       label: size,
@@ -42,7 +42,7 @@ export default function AddProduct() {
 
 
   let
-    colorOptionsCoverted,
+    colorOptionsConverted,
     handleColorChangeOption,
     brands,
     isAdded;
@@ -137,7 +137,7 @@ export default function AddProduct() {
                   components={animatedComponents}
                   isMulti
                   name="sizes"
-                  options={sizeOptionsCoverted}
+                  options={sizeOptionsConverted}
                   className="basic-multi-select"
                   classNamePrefix="select"
                   isClearable={true}
@@ -195,7 +195,7 @@ export default function AddProduct() {
                   components={animatedComponents}
                   isMulti
                   name="colors"
-                  options={colorOptionsCoverted}
+                  options={colorOptionsConverted}
                   className="basic-multi-select"
                   classNamePrefix="select"
                   isClearable={true}

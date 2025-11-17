@@ -9,7 +9,7 @@ import {
 import { isLoggedIn } from "../middleware/isLoggedIn.js";
 import isAdmin from "../middleware/isAdmin.js";
 
-const brandsRoute = exppress.Router();
+const brandsRoute = express.Router();
 
 brandsRoute.post("/", isLoggedIn, isAdmin, createBrandController);
 brandsRoute.get("/", getAllBrandsController);

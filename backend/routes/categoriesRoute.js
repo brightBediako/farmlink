@@ -1,5 +1,4 @@
 import express from "express";
-import { isLoggedIn } from "../middleware/isLoggedIn.js";
 import {
   createCategoryController,
   getCategoryController,
@@ -8,6 +7,7 @@ import {
   deleteCategoryController,
 } from "../controllers/categoriesController.js";
 import categoryUpload from "../config/categoryUpload.js";
+import { isLoggedIn } from "../middleware/isLoggedIn.js";
 import isAdmin from "../middleware/isAdmin.js";
 
 

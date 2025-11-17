@@ -9,6 +9,7 @@ import { globalErrhandler, notFound } from "../middleware/globalErrHandler.js";
 import authRoute from "../routes/authRoute.js";
 import usersRoute from "../routes/usersRoute.js";
 import productsRoute from "../routes/productsRoute.js";
+import brandsRoute from "../routes/brandsRoute.js";
 import categoriesRoute from "../routes/categoriesRoute.js";
 import colorsRoute from "../routes/colorsRoute.js";
 import reviewsRoute from "../routes/reviewsRoute.js";
@@ -19,6 +20,7 @@ import Order from "../models/Order.js";
 import { sendOrderNotificationEmail } from "../services/emailNotification.js";
 import User from "../models/User.js";
 import Product from "../models/Product.js";
+
 
 //db connect
 dbConnect();
@@ -167,6 +169,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/products", productsRoute);
+app.use("/api/v1/brands", brandsRoute);
 app.use("/api/v1/categories", categoriesRoute);
 app.use("/api/v1/colors", colorsRoute);
 app.use("/api/v1/reviews/", reviewsRoute);

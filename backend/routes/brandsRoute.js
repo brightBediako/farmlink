@@ -5,10 +5,9 @@ import {
     getAllBrandsController,
     getSingleBrandController,
     updateBrandController,
-} from "../";
-import isAdmin from "../middlewares/isAdmin.js";
-
-import { isLoggedIn } from "../middlewares/isLoggedIn.js";
+} from "../controllers/brandsController.js";
+import { isLoggedIn } from "../middleware/isLoggedIn.js";
+import isAdmin from "../middleware/isAdmin.js";
 
 const brandsRoute = exppress.Router();
 

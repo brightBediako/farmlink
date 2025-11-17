@@ -15,6 +15,6 @@ brandsRoute.post("/", isLoggedIn, isAdmin, createBrandController);
 brandsRoute.get("/", getAllBrandsController);
 brandsRoute.get("/:id", getSingleBrandController);
 brandsRoute.delete("/:id", isLoggedIn, isAdmin, deleteBrandController);
-brandsRoute.put("/:id", isLoggedIn, isAdmin, updateBrandController);
+brandsRoute.put("/update-brand/:id", isLoggedIn, isAdmin, updateBrandController);
 
 export default brandsRoute;

@@ -172,9 +172,9 @@ app.use("/api/v1/products", productsRoute);
 app.use("/api/v1/brands", brandsRoute);
 app.use("/api/v1/categories", categoriesRoute);
 app.use("/api/v1/colors", colorsRoute);
-app.use("/api/v1/reviews/", reviewsRoute);
-app.use("/api/v1/orders/", ordersRoute);
-app.use("/api/v1/coupons/", couponsRoute);
+app.use("/api/v1/reviews", reviewsRoute);
+app.use("/api/v1/orders", ordersRoute);
+app.use("/api/v1/coupons", couponsRoute);
 app.use("/api/v1/vendors", vendorsRoute);
 
 // error middleware

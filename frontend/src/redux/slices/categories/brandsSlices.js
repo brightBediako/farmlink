@@ -9,8 +9,8 @@ import {
 const { createAsyncThunk, createSlice } = require("@reduxjs/toolkit");
 //initalsState
 const initialState = {
-  products: [],
-  product: {},
+  brands: [],
+  brand: {},
   loading: false,
   error: null,
   isAdded: false,
@@ -19,24 +19,16 @@ const initialState = {
 };
 
 
-//create product action
-export const createProductAction = createAsyncThunk(
-  "product/create",
+//create brand action
+export const createBrandAction = createAsyncThunk(
+  "brand/create",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     console.log(payload);
     try {
       const {
-        name,
-        description,
-        category,
-        sizes,
-        brand,
-        colors,
-        price,
-        totalQty,
-        files,
+        name
       } = payload;
-
+      
       const token = getState()?.users?.userAuth?.userInfo?.token;
       const config = {
         headers: {
@@ -47,26 +39,9 @@ export const createProductAction = createAsyncThunk(
       //FormData
       const formData = new FormData();
       formData.append("name", name);
-      formData.append("description", description);
-      formData.append("category", category);
-
-      formData.append("brand", brand);
-      formData.append("price", price);
-      formData.append("totalQty", totalQty);
-
-      sizes.forEach((size) => {
-        formData.append("sizes", size);
-      });
-      colors.forEach((color) => {
-        formData.append("colors", color);
-      });
-
-      files.forEach((file) => {
-        formData.append("files", file);
-      });
 
       const { data } = await axios.post(
-        `${baseURL}products/add-product`,
+        `${baseURL}categories`,
         formData,
         config
       );
@@ -77,21 +52,14 @@ export const createProductAction = createAsyncThunk(
   }
 );
 
-//update product action
-export const updateProductAction = createAsyncThunk(
-  "product/update",
+//update brand action
+export const updateBrandAction = createAsyncThunk(
+  "category/update",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     console.log(payload);
     try {
       const {
         name,
-        description,
-        category,
-        sizes,
-        brand,
-        colors,
-        price,
-        totalQty,
         id,
       } = payload;
       const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -102,16 +70,9 @@ export const updateProductAction = createAsyncThunk(
       };
 
       const { data } = await axios.put(
-        `${baseURL}products/update-product/${id}`,
+        `${baseURL}brands/update-brand/${id}`,
         {
           name,
-          description,
-          category,
-          sizes,
-          brand,
-          colors,
-          price,
-          totalQty,
         },
         config
       );
@@ -122,20 +83,13 @@ export const updateProductAction = createAsyncThunk(
   }
 );
 
-//fetch products action
-export const fetchProductsAction = createAsyncThunk(
-  "product/list",
-  async ({ url }, { rejectWithValue, getState, dispatch }) => {
-    console.log(url);
+//fetch brands action
+export const fetchBrandsAction = createAsyncThunk(
+  "brand/fetch all",
+  async ({ payload }, { rejectWithValue, getState, dispatch }) => {
+    // console.log(url);
     try {
-      const token = getState()?.users?.userAuth?.userInfo?.token;
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const { data } = await axios.get(`${url}`, config);
+      const { data } = await axios.get(`${baseURL}brands`);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -143,10 +97,10 @@ export const fetchProductsAction = createAsyncThunk(
   }
 );
 
-//fetch single product action
-export const fetchProductAction = createAsyncThunk(
-  "product/details",
-  async (productId, { rejectWithValue, getState, dispatch }) => {
+//fetch single category action
+export const fetchBrandAction = createAsyncThunk(
+  "brand/details",
+  async (categoryId, { rejectWithValue, getState, dispatch }) => {
     try {
       const token = getState()?.users?.userAuth?.userInfo?.token;
       const config = {
@@ -156,7 +110,7 @@ export const fetchProductAction = createAsyncThunk(
       };
 
       const { data } = await axios.get(
-        `${baseURL}products/${productId}`,
+        `${baseURL}brands/${brandId}`,
         config
       );
       return data;
@@ -167,71 +121,71 @@ export const fetchProductAction = createAsyncThunk(
 );
 
 //slice
-const productSlice = createSlice({
-  name: "products",
+const brandSlice = createSlice({
+  name: "brands",
   initialState,
   extraReducers: (builder) => {
 
-    //create product
-    builder.addCase(createProductAction.pending, (state) => {
+    //create brand
+    builder.addCase(createBrandAction.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(createProductAction.fulfilled, (state, action) => {
+    builder.addCase(createBrandAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.product = action.payload;
+      state.brand = action.payload;
       state.isAdded = true;
     });
-    builder.addCase(createProductAction.rejected, (state, action) => {
+    builder.addCase(createBrandAction.rejected, (state, action) => {
       state.loading = false;
-      state.product = null;
+      state.brand = null;
       state.isAdded = false;
       state.error = action.payload;
     });
 
-    //update product
-    builder.addCase(updateProductAction.pending, (state) => {
+    //update Brand
+    builder.addCase(updateBrandAction.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(updateProductAction.fulfilled, (state, action) => {
+    builder.addCase(updateBrandAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.product = action.payload;
+      state.brand = action.payload;
       state.isUpdated = true;
     });
-    builder.addCase(updateProductAction.rejected, (state, action) => {
+    builder.addCase(updateBrandAction.rejected, (state, action) => {
       state.loading = false;
-      state.product = null;
+      state.brand = null;
       state.isUpdated = false;
       state.error = action.payload;
     });
 
-    //fetch all products
-    builder.addCase(fetchProductsAction.pending, (state) => {
+    //fetch all Brands
+    builder.addCase(fetchBrandsAction.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(fetchProductsAction.fulfilled, (state, action) => {
+    builder.addCase(fetchBrandsAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.products = action.payload;
+      state.brands = action.payload;
       state.isAdded = true;
     });
-    builder.addCase(fetchProductsAction.rejected, (state, action) => {
+    builder.addCase(fetchBrandsAction.rejected, (state, action) => {
       state.loading = false;
-      state.products = null;
+      state.brands = null;
       state.isAdded = false;
       state.error = action.payload;
     });
 
-    //fetch single product
-    builder.addCase(fetchProductAction.pending, (state) => {
+    //fetch single Brand
+    builder.addCase(fetchBrandAction.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(fetchProductAction.fulfilled, (state, action) => {
+    builder.addCase(fetchBrandAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.product = action.payload;
+      state.brand = action.payload;
       state.isAdded = true;
     });
-    builder.addCase(fetchProductAction.rejected, (state, action) => {
+    builder.addCase(fetchBrandAction.rejected, (state, action) => {
       state.loading = false;
-      state.product = null;
+      state.brand = null;
       state.isAdded = false;
       state.error = action.payload;
     });
@@ -249,7 +203,7 @@ const productSlice = createSlice({
 });
 
 //generate the reducer
-const productReducer = productSlice.reducer;
+const brandReducer = brandSlice.reducer;
 
-export default productReducer;
+export default brandReducer;
 

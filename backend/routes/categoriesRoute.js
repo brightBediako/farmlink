@@ -22,7 +22,7 @@ categoriesRoute.post(
 );
 categoriesRoute.get("/", getCategoryController);
 categoriesRoute.get("/:id", getSingleCategoryController);
-categoriesRoute.put("/:id", isLoggedIn, isAdmin, updateCategoryController);
+categoriesRoute.put("/update-category/:id", isLoggedIn, isAdmin, updateCategoryController);
 categoriesRoute.delete("/:id", isLoggedIn, isAdmin, deleteCategoryController);
 
 export default categoriesRoute;

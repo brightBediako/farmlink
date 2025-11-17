@@ -1,5 +1,4 @@
 import axios from "axios";
-import { act } from "react-dom/test-utils";
 import baseURL from "../../../utils/baseURL";
 import {
   resetErrAction,
@@ -54,7 +53,7 @@ export const createCategoryAction = createAsyncThunk(
 );
 
 //update category action
-export const updateProductAction = createAsyncThunk(
+export const updateCategoryAction = createAsyncThunk(
   "category/update",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     console.log(payload);
@@ -86,18 +85,11 @@ export const updateProductAction = createAsyncThunk(
 
 //fetch categories action
 export const fetchCategoriesAction = createAsyncThunk(
-  "category/list",
-  async ({ url }, { rejectWithValue, getState, dispatch }) => {
+  "category/fetch all",
+  async ({ payload }, { rejectWithValue, getState, dispatch }) => {
     // console.log(url);
     try {
-      const token = getState()?.users?.userAuth?.userInfo?.token;
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const { data } = await axios.get(`${url}`, config);
+      const { data } = await axios.get(`${baseURL}categories`);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);

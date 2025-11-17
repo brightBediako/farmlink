@@ -18,11 +18,18 @@ export default function AddProduct() {
   const handleSizeChange = (sizes) => {
     setSizeOption(sizes);
   };
+
+  // converte size options
+  const sizeOptionsCoverted = sizes?.map((size) => {
+    return {
+      value: size,
+      label: size,
+    }
+  });
+
   // dispatch
   const dispatch = useDispatch();
-
   let categories,
-    sizeOptionsCoverted,
     colorOptionsCoverted,
     handleColorChangeOption,
     brands,

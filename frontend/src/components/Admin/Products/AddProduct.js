@@ -12,12 +12,17 @@ import { createProductAction } from "../../../redux/slices/products/productSlice
 const animatedComponents = makeAnimated();
 
 export default function AddProduct() {
+  // product sizes
+  const sizes = ["S", "M", "L", "XL", "XXL"];
+  const [sizeOption, setSizeOption] = useState([]);
+  const handleSizeChange = (sizes) => {
+    setSizeOption(sizes);
+  };
   // dispatch
   const dispatch = useDispatch();
 
   let categories,
     sizeOptionsCoverted,
-    handleSizeChange,
     colorOptionsCoverted,
     handleColorChangeOption,
     brands,

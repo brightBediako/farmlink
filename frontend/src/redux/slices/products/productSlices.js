@@ -36,6 +36,7 @@ export const createProductAction = createAsyncThunk(
         totalQty,
         files,
       } = payload;
+      
       const token = getState()?.users?.userAuth?.userInfo?.token;
       const config = {
         headers: {
@@ -170,7 +171,7 @@ const productSlice = createSlice({
   name: "products",
   initialState,
   extraReducers: (builder) => {
-    
+
     //create product
     builder.addCase(createProductAction.pending, (state) => {
       state.loading = true;
@@ -234,7 +235,7 @@ const productSlice = createSlice({
       state.isAdded = false;
       state.error = action.payload;
     });
-    
+
     //reset error
     builder.addCase(resetErrAction.pending, (state, action) => {
       state.error = null;

@@ -5,7 +5,6 @@ import {
   resetSuccessAction,
 } from "../globalActions/globalActions";
 
-
 const { createAsyncThunk, createSlice } = require("@reduxjs/toolkit");
 //initalsState
 const initialState = {
@@ -18,17 +17,14 @@ const initialState = {
   isDelete: false,
 };
 
-
 //create brand action
 export const createBrandAction = createAsyncThunk(
   "brand/create",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     console.log(payload);
     try {
-      const {
-        name
-      } = payload;
-      
+      const { name } = payload;
+
       const token = getState()?.users?.userAuth?.userInfo?.token;
       const config = {
         headers: {
@@ -40,11 +36,7 @@ export const createBrandAction = createAsyncThunk(
       const formData = new FormData();
       formData.append("name", name);
 
-      const { data } = await axios.post(
-        `${baseURL}categories`,
-        formData,
-        config
-      );
+      const { data } = await axios.post(`${baseURL}brands`, formData, config);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -54,14 +46,11 @@ export const createBrandAction = createAsyncThunk(
 
 //update brand action
 export const updateBrandAction = createAsyncThunk(
-  "category/update",
+  "brand/update",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     console.log(payload);
     try {
-      const {
-        name,
-        id,
-      } = payload;
+      const { name, id } = payload;
       const token = getState()?.users?.userAuth?.userInfo?.token;
       const config = {
         headers: {
@@ -70,7 +59,7 @@ export const updateBrandAction = createAsyncThunk(
       };
 
       const { data } = await axios.put(
-        `${baseURL}brands/update-brand/${id}`,
+        `${baseURL}brands/${id}`,
         {
           name,
         },
@@ -97,10 +86,10 @@ export const fetchBrandsAction = createAsyncThunk(
   }
 );
 
-//fetch single category action
+//fetch single brand action
 export const fetchBrandAction = createAsyncThunk(
   "brand/details",
-  async (categoryId, { rejectWithValue, getState, dispatch }) => {
+  async (brandId, { rejectWithValue, getState, dispatch }) => {
     try {
       const token = getState()?.users?.userAuth?.userInfo?.token;
       const config = {
@@ -109,10 +98,7 @@ export const fetchBrandAction = createAsyncThunk(
         },
       };
 
-      const { data } = await axios.get(
-        `${baseURL}brands/${brandId}`,
-        config
-      );
+      const { data } = await axios.get(`${baseURL}brands/${brandId}`, config);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -125,7 +111,6 @@ const brandSlice = createSlice({
   name: "brands",
   initialState,
   extraReducers: (builder) => {
-
     //create brand
     builder.addCase(createBrandAction.pending, (state) => {
       state.loading = true;
@@ -206,4 +191,3 @@ const brandSlice = createSlice({
 const brandReducer = brandSlice.reducer;
 
 export default brandReducer;
-

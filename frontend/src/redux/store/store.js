@@ -3,9 +3,7 @@ import usersReducer from "../slices/users/usersSlice";
 import authReducer from "../slices/auth/authSlice";
 import productReducer from "../slices/products/productSlices";
 import categoryReducer from "../slices/categories/categoriesSlices";
-import brandReducer from "../slices/categories/brandsSlices";
-
-
+import brandReducer from "../slices/brands/brandsSlices";
 
 // export const store = configureStore({
 //   reducer: {
@@ -21,6 +19,5 @@ export const store = configureStore({
     brandReducer: brandReducer,
   },
 });
-
 
 export default store;

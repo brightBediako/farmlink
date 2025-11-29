@@ -8,6 +8,7 @@ import SuccessMsg from "../../SuccessMsg/SuccessMsg";
 import { createProductAction } from "../../../redux/slices/products/productSlices";
 import { fetchCategoriesAction } from "../../../redux/slices/categories/categoriesSlices";
 import { fetchBrandsAction } from "../../../redux/slices/brands/brandsSlices";
+import { fetchColorsAction } from "../../../redux/slices/colors/colorsSlice";
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
@@ -51,7 +52,32 @@ export default function AddProduct() {
     brands: { brands },
   } = useSelector((state) => state?.brands);
 
-  let colorOptionsConverted, handleColorChangeOption, isAdded;
+  // fetch colors
+  useEffect(() => {
+    dispatch(fetchColorsAction({}));
+  }, [dispatch]);
+
+  const { colorsOption, setColorsOption } = useState([]);
+
+  //get colors from store
+  const {
+    colors: { colors },
+  } = useSelector((state) => state?.colors);
+
+  // product colors
+  const handleColorChange = (colors) => {
+    setColorsOption(colors);
+  };
+
+  //convert color options
+  const colorsConverted = colors?.map((color) => {
+    return {
+      value: color?.name,
+      label: color?.name,
+    };
+  });
+
+  let isAdded;
 
   //---form data---
   const [formData, setFormData] = useState({
@@ -213,14 +239,14 @@ export default function AddProduct() {
                   components={animatedComponents}
                   isMulti
                   name="colors"
-                  options={colorOptionsConverted}
+                  options={colorsConverted}
                   className="basic-multi-select"
                   classNamePrefix="select"
                   isClearable={true}
                   isLoading={false}
                   isSearchable={true}
                   closeMenuOnSelect={false}
-                  onChange={(e) => handleColorChangeOption(e)}
+                  onChange={(e) => handleColorChange(e)}
                 />
               </div>
 

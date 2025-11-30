@@ -5,7 +5,6 @@ import {
   resetSuccessAction,
 } from "../globalActions/globalActions";
 
-
 const { createAsyncThunk, createSlice } = require("@reduxjs/toolkit");
 //initalsState
 const initialState = {
@@ -18,12 +17,10 @@ const initialState = {
   isDelete: false,
 };
 
-
 //create product action
 export const createProductAction = createAsyncThunk(
   "product/create",
   async (payload, { rejectWithValue, getState, dispatch }) => {
-    console.log(payload);
     try {
       const {
         name,
@@ -126,7 +123,6 @@ export const updateProductAction = createAsyncThunk(
 export const fetchProductsAction = createAsyncThunk(
   "product/list",
   async ({ url }, { rejectWithValue, getState, dispatch }) => {
-    console.log(url);
     try {
       const token = getState()?.users?.userAuth?.userInfo?.token;
       const config = {
@@ -135,7 +131,7 @@ export const fetchProductsAction = createAsyncThunk(
         },
       };
 
-      const { data } = await axios.get(`${url}`, config);
+      const { data } = await axios.get(`${baseURL}products`, config);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -171,7 +167,6 @@ const productSlice = createSlice({
   name: "products",
   initialState,
   extraReducers: (builder) => {
-
     //create product
     builder.addCase(createProductAction.pending, (state) => {
       state.loading = true;
@@ -181,6 +176,7 @@ const productSlice = createSlice({
       state.product = action.payload;
       state.isAdded = true;
     });
+
     builder.addCase(createProductAction.rejected, (state, action) => {
       state.loading = false;
       state.product = null;
@@ -252,4 +248,3 @@ const productSlice = createSlice({
 const productReducer = productSlice.reducer;
 
 export default productReducer;
-

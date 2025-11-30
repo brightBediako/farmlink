@@ -17,6 +17,33 @@ export default function AddProduct() {
   // dispatch
   const dispatch = useDispatch();
 
+  // files
+  const [files, setFiles] = useState([]);
+  const [filesErrs, setFilesErrs] = useState([]);
+
+  // handle file change
+  const fileHandleChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+    const maxSize = 2 * 1024 * 1024; // 2MB
+
+    const validFiles = [];
+    const errors = [];
+
+    newFiles.forEach((file) => {
+      if (!allowedTypes.includes(file.type)) {
+        errors.push(`${file.name} is not a supported format.`);
+      } else if (file.size > maxSize) {
+        errors.push(`${file.name} exceeds the maximum size of 2MB.`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    setFiles(validFiles);
+    setFilesErrs(errors);
+  };
+
   // product sizes
   const sizes = ["S", "M", "L", "XL", "XXL"];
   const [sizeOption, setSizeOption] = useState([]);
@@ -38,9 +65,7 @@ export default function AddProduct() {
   }, [dispatch]);
 
   //get categories from store
-  const { categories, loading, error } = useSelector(
-    (state) => state?.categories?.categories
-  );
+  const { categories } = useSelector((state) => state?.categories?.categories);
 
   // fetch brands
   useEffect(() => {
@@ -77,8 +102,6 @@ export default function AddProduct() {
     };
   });
 
-  let isAdded;
-
   //---form data---
   const [formData, setFormData] = useState({
     name: "",
@@ -87,7 +110,7 @@ export default function AddProduct() {
     sizes: "",
     brand: "",
     colors: "",
-    images: "",
+    // images: "",
     price: "",
     totalQty: "",
   });
@@ -97,33 +120,23 @@ export default function AddProduct() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // get product state from store
+  const { product, loading, error, isAdded } = useSelector(
+    (state) => state?.products
+  );
+
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
     //dispatch action
-    const {
-      name,
-      description,
-      category,
-      sizes,
-      brand,
-      colors,
-      price,
-      totalQty,
-      images,
-    } = formData;
-    const formDataToSend = {
-      name,
-      description,
-      category,
-      sizes,
-      brand,
-      colors,
-      price,
-      totalQty,
-      files: images instanceof FileList ? Array.from(images) : [],
-    };
-    dispatch(createProductAction(formDataToSend));
+    dispatch(
+      createProductAction({
+        ...formData,
+        files,
+        sizes: sizeOption?.map((size) => size?.label),
+        colors: colorsOption?.map((color) => color.label),
+      })
+    );
     //reset form data
     setFormData({
       name: "",
@@ -132,15 +145,16 @@ export default function AddProduct() {
       sizes: "",
       brand: "",
       colors: "",
-      images: "",
       price: "",
       totalQty: "",
+      images: "",
     });
   };
 
   return (
     <>
       {error && <ErrorMsg message={error?.message} />}
+      {filesErrs?.length > 0 && <ErrorMsg message="File's is too large..." />}
       {isAdded && <SuccessMsg message="Product Added Successfully" />}
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -290,7 +304,7 @@ export default function AddProduct() {
                         </label>
                       </div>
                       <p className="text-xs text-gray-500">
-                        PNG, JPG, GIF up to 10MB
+                        PNG, JPG, GIF up to 5MB
                       </p>
                     </div>
                   </div>
@@ -351,6 +365,7 @@ export default function AddProduct() {
                   <LoadingComponent />
                 ) : (
                   <button
+                    disabled={filesErrs?.length > 0}
                     type="submit"
                     className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >

@@ -82,7 +82,7 @@ export default function AddProduct() {
     dispatch(fetchColorsAction({}));
   }, [dispatch]);
 
-  const { colorsOption, setColorsOption } = useState([]);
+  const [colorsOption, setColorsOption] = useState([]);
 
   //get colors from store
   const {
@@ -296,10 +296,12 @@ export default function AddProduct() {
                         >
                           <span>Upload files</span>
                           <input
+                            id="file-upload"
                             name="images"
-                            value={formData.images}
-                            onChange={handleOnChange}
                             type="file"
+                            multiple
+                            onChange={fileHandleChange}
+                            className="sr-only"
                           />
                         </label>
                       </div>

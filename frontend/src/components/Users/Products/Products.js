@@ -20,7 +20,8 @@ const Products = ({ products }) => {
                     // state: {
                     //   product: product,
                     // },
-                  }}>
+                  }}
+                >
                   <img
                     className="w-full h-64 object-cover"
                     src={product?.images[0]}
@@ -41,13 +42,15 @@ const Products = ({ products }) => {
                   </a>
                   <a
                     className="ml-auto mr-2 flex items-center justify-center w-12 h-12 bg-blue-300 hover:bg-blue-400 rounded-md"
-                    href="#">
+                    href="#"
+                  >
                     <svg
                       width={12}
                       height={12}
                       viewBox="0 0 12 12"
                       fill="none"
-                      xmlns="http://www.w3.org/2000/svg">
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <rect x={5} width={2} height={12} fill="white" />
                       <rect
                         x={12}

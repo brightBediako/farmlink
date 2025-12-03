@@ -11,6 +11,7 @@ import {
 } from "../controllers/productsController.js";
 import isAccountVerified from "../middleware/isAccountVerified.js";
 import isBlocked from "../middleware/isBlocked.js";
+import isAdmin from "../middleware/isAdmin.js";
 
 const productsRoute = express.Router();
 
@@ -19,6 +20,7 @@ productsRoute.post(
   isLoggedIn,
   isBlocked,
   isAccountVerified,
+  isAdmin,
   upload.array("files"),
   createProductController
 );
